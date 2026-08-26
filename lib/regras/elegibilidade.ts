@@ -15,6 +15,7 @@ export function calcularDataCorte(hoje: Date, margemDiasUteis: number): Date {
   return corte;
 }
 
+// Pressupõe que `data` já está normalizada para meia-noite UTC (como o retorno de calcularDataCorte) — passar uma Date arbitrária pode retornar o dia errado dependendo do fuso horário local.
 export function formatarDataISO(data: Date): string {
   return data.toISOString().slice(0, 10);
 }

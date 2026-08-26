@@ -6,7 +6,7 @@ export interface LinhaRp {
   modalidade: string;
   titulo?: string;
   secund: number;
-  mult: number;
+  mult: number | null;
   precoBase: number | null;
   unit: number | null;
   nDatas: number;

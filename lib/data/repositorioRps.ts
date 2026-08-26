@@ -8,7 +8,7 @@ export interface RepositorioRps {
 export function criarRepositorioMock(): RepositorioRps {
   return {
     listarRps() {
-      return carregarCaData().rps;
+      return carregarCaData().rps.slice();
     },
   };
 }
