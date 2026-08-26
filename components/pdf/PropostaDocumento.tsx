@@ -1,23 +1,30 @@
 import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import {
   Document,
   Page,
   View,
   Text,
+  Image,
   StyleSheet,
   Font,
   Svg,
-  Defs,
-  LinearGradient,
-  Stop,
-  Rect,
+  G,
+  Path,
 } from '@react-pdf/renderer';
 import { formatarMoeda } from '@/lib/rps/formato';
 import type { LinhaProposta, TotalProposta } from '@/lib/propostas/calculoProposta';
+import { LOGO_GLOBOPLAY_PATH } from './logoGloboplayPath';
 
 // Usa fs/path (Node) — nunca importar este módulo a partir de um componente 'use client'.
 
 const PASTA_FONTES = join(process.cwd(), 'assets', 'fonts');
+// @react-pdf/image resolve raw caminhos absolutos do Windows ("C:\...") como se
+// fossem URLs remotas (a letra da unidade parece um esquema de URI) — por isso
+// o caminho da imagem precisa ser uma file:// URL explícita.
+const CAMINHO_BARRA_GRADIENTE = pathToFileURL(
+  join(process.cwd(), 'public', 'barra-gradiente-globoplay.png')
+).href;
 
 Font.register({
   family: 'Globotipo Corporativa',
@@ -50,7 +57,6 @@ interface PropostaDocumentoProps {
   dataGeracao: string;
 }
 
-const LARGURA_PAGINA = 842;
 const ALTURA_FAIXA = 64;
 
 const styles = StyleSheet.create({
@@ -62,26 +68,34 @@ const styles = StyleSheet.create({
   },
   faixaCabecalho: {
     height: ALTURA_FAIXA,
-    position: 'relative',
-    justifyContent: 'center',
+    backgroundColor: '#11151C',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 24,
   },
-  faixaSvg: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
   tituloFaixa: {
-    fontFamily: 'Globotipo Corporativa',
+    fontFamily: 'Globotipo Corporativa Textos',
+    fontWeight: 700,
+    fontSize: 18,
+    color: '#ffffff',
+    lineHeight: 1.2,
+  },
+  barraGradiente: {
+    width: 60,
+    height: 6,
+    marginTop: 5,
+  },
+  numeroRpFaixa: {
+    fontFamily: 'Globotipo Corporativa Textos',
     fontWeight: 700,
     fontSize: 18,
     color: '#ffffff',
   },
-  subtituloFaixa: {
-    fontFamily: 'Globotipo Corporativa Textos',
-    fontSize: 10,
-    color: '#ffffff',
-    marginTop: 2,
+  logoRodape: {
+    position: 'absolute',
+    bottom: 16,
+    right: 24,
   },
   corpo: {
     paddingHorizontal: 24,
@@ -155,16 +169,12 @@ const styles = StyleSheet.create({
   colLiquido: { width: '12%', textAlign: 'right' },
 });
 
-function FaixaGradiente() {
+function LogoGloboplay() {
   return (
-    <Svg style={styles.faixaSvg} width={LARGURA_PAGINA} height={ALTURA_FAIXA}>
-      <Defs>
-        <LinearGradient id="gradienteMarca" x1="0" y1="0" x2="1" y2="0">
-          <Stop offset="0" stopColor="#FFA60C" />
-          <Stop offset="0.97" stopColor="#F50234" />
-        </LinearGradient>
-      </Defs>
-      <Rect x={0} y={0} width={LARGURA_PAGINA} height={ALTURA_FAIXA} fill="url(#gradienteMarca)" />
+    <Svg viewBox="0 0 129 28" width={64} height={14}>
+      <G transform="matrix(1.00866 0 0 1 0 0.105)">
+        <Path d={LOGO_GLOBOPLAY_PATH} fill="#F50234" />
+      </G>
     </Svg>
   );
 }
@@ -181,10 +191,17 @@ function CampoInfo({ rotulo, valor }: { rotulo: string; valor: string }) {
 function PaginaDaProposta({ pagina, dataGeracao }: { pagina: PaginaProposta; dataGeracao: string }) {
   return (
     <Page size="A4" orientation="landscape" style={styles.pagina}>
-      <View style={styles.faixaCabecalho}>
-        <FaixaGradiente />
-        <Text style={styles.tituloFaixa}>Proposta · Comercial Amplificado</Text>
-        <Text style={styles.subtituloFaixa}>Hub Amplificado</Text>
+      <View style={styles.faixaCabecalho} fixed>
+        <View>
+          <Text style={styles.tituloFaixa}>Proposta</Text>
+          <Text style={styles.tituloFaixa}>Comercial Amplificado</Text>
+          <Image src={CAMINHO_BARRA_GRADIENTE} style={styles.barraGradiente} />
+        </View>
+        <Text style={styles.numeroRpFaixa}>RP {pagina.rp}</Text>
+      </View>
+
+      <View style={styles.logoRodape} fixed>
+        <LogoGloboplay />
       </View>
 
       <View style={styles.corpo}>
