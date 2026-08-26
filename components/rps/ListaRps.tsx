@@ -11,6 +11,7 @@ import {
   type FiltrosRps,
 } from '@/lib/rps/regrasLista';
 import { BadgeStatus } from './BadgeStatus';
+import { PainelDetalhe } from './PainelDetalhe';
 
 interface ListaRpsProps {
   rps: RpComStatus[];
@@ -214,7 +215,16 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             padding: 16,
           }}
         >
-          {!detalheId && (
+          {detalheId ? (
+            (() => {
+              const rpAberta = rps.find((rp) => rp.rp === detalheId);
+              return rpAberta ? (
+                <PainelDetalhe rp={rpAberta} />
+              ) : (
+                <p style={{ fontSize: 12.5, color: 'var(--cor-tinta-terciaria)' }}>RP não encontrada.</p>
+              );
+            })()
+          ) : (
             <p style={{ fontSize: 12.5, lineHeight: 1.6, color: 'var(--cor-tinta-terciaria)' }}>
               Selecione uma RP na lista para ver o detalhamento por programa, o valor unitário calculado
               e gerar uma proposta.
