@@ -24,7 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-          <strong className="texto-gradiente-marca" style={{ fontSize: 13, fontWeight: 700 }}>
+          <strong style={{ fontSize: 13, fontWeight: 700, color: '#101820' }}>
             Hub Amplificado
           </strong>
           <span
