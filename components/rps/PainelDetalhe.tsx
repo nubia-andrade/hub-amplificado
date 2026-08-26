@@ -25,7 +25,7 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
         <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0 }}>RP {rp.rp}</h2>
-        <BadgeStatus status={rp.status} elegivel={rp.elegivel} />
+        <BadgeStatus status={rp.status} elegivel={rp.elegivel} motivos={rp.motivos} />
       </div>
       <p style={{ fontSize: 13, margin: '0 0 2px' }}>{rp.anunciante}</p>
       <p style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--cor-tinta-secundaria)', margin: '0 0 14px' }}>

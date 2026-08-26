@@ -3,6 +3,7 @@ import type { StatusComercial } from '@/lib/rps/rpComStatus';
 interface BadgeStatusProps {
   status: StatusComercial;
   elegivel: boolean;
+  motivos?: string[];
 }
 
 const CORES: Record<StatusComercial | 'Não elegível', { texto: string; fundo: string; borda: string }> = {
@@ -33,12 +34,14 @@ const CORES: Record<StatusComercial | 'Não elegível', { texto: string; fundo: 
   },
 };
 
-export function BadgeStatus({ status, elegivel }: BadgeStatusProps) {
+export function BadgeStatus({ status, elegivel, motivos }: BadgeStatusProps) {
   const rotulo = elegivel ? status : 'Não elegível';
   const cor = CORES[rotulo];
+  const titulo = !elegivel && motivos && motivos.length > 0 ? motivos.join('; ') : undefined;
 
   return (
     <span
+      title={titulo}
       style={{
         display: 'inline-block',
         fontSize: 10,
@@ -49,6 +52,7 @@ export function BadgeStatus({ status, elegivel }: BadgeStatusProps) {
         background: cor.fundo,
         border: `1px solid ${cor.borda}`,
         whiteSpace: 'nowrap',
+        cursor: titulo ? 'help' : undefined,
       }}
     >
       {rotulo}

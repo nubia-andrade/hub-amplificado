@@ -233,7 +233,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                 <span style={{ fontSize: 12 }}>{rp.exib}</span>
                 <span style={{ fontSize: 11.5, color: 'var(--cor-tinta-secundaria)' }}>{mesDaRp(rp)}</span>
                 <span style={{ fontSize: 12, textAlign: 'right' }}>{rp.elegivel ? formatarMoeda(rp.valorTabela) : '—'}</span>
-                <BadgeStatus status={rp.status} elegivel={rp.elegivel} />
+                <BadgeStatus status={rp.status} elegivel={rp.elegivel} motivos={rp.motivos} />
               </div>
             );
           })}
