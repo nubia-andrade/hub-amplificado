@@ -24,14 +24,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-          <strong style={{ fontSize: 13 }}>PROPOSTAS · Comercial Amplificado</strong>
+          <strong className="texto-gradiente-marca" style={{ fontSize: 13, fontWeight: 700 }}>
+            PROPOSTAS · Comercial Amplificado
+          </strong>
           <span
             style={{
-              background: 'var(--cor-tinta-principal)',
+              background: 'var(--gradiente-marca)',
               color: '#fff',
-              padding: '6px 12px',
-              borderRadius: 'var(--raio-input)',
+              padding: '6px 14px',
+              borderRadius: 'var(--raio-botao)',
               fontSize: 12,
+              fontWeight: 700,
+              boxShadow: 'var(--sombra-botao)',
             }}
           >
             Minhas RPs

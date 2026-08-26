@@ -34,7 +34,10 @@ export default function LoginPage() {
         >
           COMERCIAL AMPLIFICADO
         </p>
-        <h1 style={{ fontSize: 22, lineHeight: 1.2, fontWeight: 700, margin: '4px 0 8px' }}>
+        <h1
+          className="texto-gradiente-marca"
+          style={{ fontSize: 24, lineHeight: 1.2, fontWeight: 800, margin: '4px 0 8px' }}
+        >
           Propostas
         </h1>
         <p
@@ -98,12 +101,13 @@ export default function LoginPage() {
             style={{
               width: '100%',
               padding: '11px',
-              background: 'var(--cor-tinta-principal)',
+              background: 'var(--gradiente-marca)',
               color: '#fff',
-              fontWeight: 600,
+              fontWeight: 700,
               fontSize: 13,
               border: 'none',
               borderRadius: 'var(--raio-botao)',
+              boxShadow: 'var(--sombra-botao)',
               cursor: pendente ? 'default' : 'pointer',
             }}
           >
@@ -125,7 +129,7 @@ export default function LoginPage() {
         {ATALHOS.map((a) => (
           <p
             key={a.email}
-            style={{ fontSize: 11.5, fontFamily: 'var(--fonte-mono)', margin: '4px 0' }}
+            style={{ fontSize: 11.5, margin: '4px 0' }}
           >
             {a.email} · {a.nome}
           </p>
