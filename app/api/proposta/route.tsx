@@ -5,7 +5,7 @@ import { paraRpComStatus } from '@/lib/rps/rpComStatus';
 import { ehSelecionavel, minhasRps } from '@/lib/rps/regrasLista';
 import { mesDaRp } from '@/lib/rps/formato';
 import { obterPropostaCaPorChave } from '@/lib/data/tabelaPrecos';
-import { obterAgenciaMock } from '@/lib/data/agenciaMock';
+import { obterAgenciaCliente } from '@/lib/data/agenciaCliente';
 import { montarLinhasProposta } from '@/lib/propostas/calculoProposta';
 import { PropostaDocumento, type PaginaProposta } from '@/components/pdf/PropostaDocumento';
 import { renderToBuffer } from '@react-pdf/renderer';
@@ -70,9 +70,10 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const cliente = rpsEscolhidas[0]!.anunciante;
-  const agenciaMock = obterAgenciaMock(cliente);
-  const possuiAgencia = typeof corpo.possuiAgencia === 'boolean' ? corpo.possuiAgencia : Boolean(agenciaMock);
-  const nomeAgencia = possuiAgencia ? corpo.nomeAgencia?.trim() || agenciaMock : null;
+  const agenciaCadastrada = await obterAgenciaCliente(cliente);
+  const possuiAgencia =
+    typeof corpo.possuiAgencia === 'boolean' ? corpo.possuiAgencia : agenciaCadastrada.possuiAgencia;
+  const nomeAgencia = possuiAgencia ? corpo.nomeAgencia?.trim() || agenciaCadastrada.nomeAgencia : null;
 
   if (possuiAgencia && !nomeAgencia) {
     return erro('Informe o nome da agência.', 400);
