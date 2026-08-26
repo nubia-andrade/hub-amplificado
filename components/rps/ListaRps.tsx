@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Sessao } from '@/lib/auth/session';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
-import { formatarMoeda } from '@/lib/rps/formato';
+import { formatarMoeda, mesDaRp } from '@/lib/rps/formato';
 import {
   ehSelecionavel,
   estadoSelecaoTodas,
@@ -140,14 +140,29 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
         </span>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) 336px' }}>
-        <div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0,1fr) 400px',
+          gap: 16,
+          alignItems: 'start',
+          padding: '16px 22px',
+        }}
+      >
+        <div
+          style={{
+            border: '1px solid var(--cor-borda)',
+            borderRadius: 'var(--raio-card)',
+            background: 'var(--cor-superficie)',
+            overflow: 'hidden',
+          }}
+        >
           <div
             style={{
               position: 'sticky',
               top: 53,
               display: 'grid',
-              gridTemplateColumns: '28px 72px minmax(110px,1fr) 44px 96px 104px',
+              gridTemplateColumns: '28px 72px minmax(90px,1fr) 44px 70px 96px 104px',
               gap: 8,
               padding: '11px 16px',
               background: 'var(--cor-cabecalho-tabela)',
@@ -167,6 +182,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             <span>RP</span>
             <span>Anunciante</span>
             <span>Praça</span>
+            <span>Mês</span>
             <span style={{ textAlign: 'right' }}>Tabela</span>
             <span>Status</span>
           </div>
@@ -182,7 +198,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                 onClick={() => setDetalheId(rp.rp)}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '28px 72px minmax(110px,1fr) 44px 96px 104px',
+                  gridTemplateColumns: '28px 72px minmax(90px,1fr) 44px 70px 96px 104px',
                   gap: 8,
                   padding: '11px 16px',
                   borderBottom: '1px solid var(--cor-borda-sutil)',
@@ -205,6 +221,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                   {rp.anunciante} <span style={{ color: 'var(--cor-tinta-terciaria)' }}>· {rp.linhas.length} linhas</span>
                 </span>
                 <span style={{ fontSize: 12 }}>{rp.exib}</span>
+                <span style={{ fontSize: 11.5, color: 'var(--cor-tinta-secundaria)' }}>{mesDaRp(rp)}</span>
                 <span style={{ fontSize: 12, textAlign: 'right' }}>{rp.elegivel ? formatarMoeda(rp.valorTabela) : '—'}</span>
                 <BadgeStatus status={rp.status} elegivel={rp.elegivel} />
               </div>
@@ -221,9 +238,11 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
           style={{
             position: 'sticky',
             top: 53,
-            height: 'calc(100vh - 53px)',
+            height: 'calc(100vh - 85px)',
             overflowY: 'auto',
-            borderLeft: '1px solid var(--cor-borda)',
+            border: '1px solid var(--cor-borda)',
+            borderRadius: 'var(--raio-card)',
+            background: 'var(--cor-superficie)',
             padding: 16,
           }}
         >

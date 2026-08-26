@@ -1,5 +1,5 @@
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
-import { formatarMoeda } from '@/lib/rps/formato';
+import { formatarMoeda, mesDaRp } from '@/lib/rps/formato';
 import { BadgeStatus } from './BadgeStatus';
 
 interface PainelDetalheProps {
@@ -32,10 +32,14 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
         {rp.cnpj}
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 14 }}>
         <div style={CARD_STYLE}>
           <p style={RODAPE_LABEL}>Praça</p>
           <p style={{ fontSize: 12.5, margin: 0 }}>{rp.exib}</p>
+        </div>
+        <div style={CARD_STYLE}>
+          <p style={RODAPE_LABEL}>Mês</p>
+          <p style={{ fontSize: 12.5, margin: 0 }}>{mesDaRp(rp)}</p>
         </div>
         <div style={CARD_STYLE}>
           <p style={RODAPE_LABEL}>Portfólio</p>
