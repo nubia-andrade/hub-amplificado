@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Sessao } from '@/lib/auth/session';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
+import { formatarMoeda } from '@/lib/rps/formato';
 import {
   ehSelecionavel,
   estadoSelecaoTodas,
@@ -26,20 +27,27 @@ const FILTROS_INICIAIS: FiltrosRps = {
   executivo: '',
 };
 
-function money(valor: number): string {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 });
-}
-
 export function ListaRps({ rps, sessao }: ListaRpsProps) {
   const [filtros, setFiltros] = useState<FiltrosRps>(FILTROS_INICIAIS);
   const [selecionadas, setSelecionadas] = useState<string[]>([]);
   const [detalheId, setDetalheId] = useState<string | null>(null);
+  const checkboxCabecalhoRef = useRef<HTMLInputElement>(null);
 
-  const pracas = useMemo(() => [...new Set(rps.map((rp) => rp.exib))].sort(), [rps]);
-  const executivos = useMemo(() => [...new Set(rps.map((rp) => rp.executivo))].sort(), [rps]);
+  const pracas = useMemo(() => [...new Set(rps.map((rp) => rp.exib))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [rps]);
+  const executivos = useMemo(
+    () => [...new Set(rps.map((rp) => rp.executivo))].sort((a, b) => a.localeCompare(b, 'pt-BR')),
+    [rps]
+  );
   const filtradas = useMemo(() => filtrarRps(rps, filtros), [rps, filtros]);
   const estadoTodas = estadoSelecaoTodas(filtradas, selecionadas);
   const resumo = resumoSelecao(rps, selecionadas);
+  const filtradasExibidas = filtradas.slice(0, 120);
+
+  useEffect(() => {
+    if (checkboxCabecalhoRef.current) {
+      checkboxCabecalhoRef.current.indeterminate = estadoTodas === 'parcial';
+    }
+  }, [estadoTodas]);
 
   function alternarSelecao(rp: string) {
     setSelecionadas((atual) => (atual.includes(rp) ? atual.filter((id) => id !== rp) : [...atual, rp]));
@@ -152,9 +160,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
           >
             <input
               type="checkbox"
-              ref={(elemento) => {
-                if (elemento) elemento.indeterminate = estadoTodas === 'parcial';
-              }}
+              ref={checkboxCabecalhoRef}
               checked={estadoTodas === 'todas'}
               onChange={alternarTodas}
             />
@@ -165,7 +171,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             <span>Status</span>
           </div>
 
-          {filtradas.map((rp) => {
+          {filtradasExibidas.map((rp) => {
             const selecionavel = ehSelecionavel(rp);
             const aberta = detalheId === rp.rp;
             const marcada = selecionadas.includes(rp.rp);
@@ -182,7 +188,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                   borderBottom: '1px solid var(--cor-borda-sutil)',
                   alignItems: 'center',
                   cursor: 'pointer',
-                  background: aberta ? 'var(--cor-linha-marcada)' : 'transparent',
+                  background: aberta ? 'var(--cor-linha-marcada)' : marcada ? 'var(--cor-superficie-suave)' : 'transparent',
                   color: rp.elegivel ? 'var(--cor-tinta-principal)' : 'var(--cor-tinta-terciaria)',
                 }}
               >
@@ -190,6 +196,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                   type="checkbox"
                   disabled={!selecionavel}
                   checked={marcada}
+                  title={selecionavel ? undefined : 'Só RPs elegíveis e com status Disponível podem ser selecionadas.'}
                   onClick={(evento) => evento.stopPropagation()}
                   onChange={() => alternarSelecao(rp.rp)}
                 />
@@ -198,11 +205,16 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                   {rp.anunciante} <span style={{ color: 'var(--cor-tinta-terciaria)' }}>· {rp.linhas.length} linhas</span>
                 </span>
                 <span style={{ fontSize: 12 }}>{rp.exib}</span>
-                <span style={{ fontSize: 12, textAlign: 'right' }}>{rp.elegivel ? money(rp.valorTabela) : '—'}</span>
+                <span style={{ fontSize: 12, textAlign: 'right' }}>{rp.elegivel ? formatarMoeda(rp.valorTabela) : '—'}</span>
                 <BadgeStatus status={rp.status} elegivel={rp.elegivel} />
               </div>
             );
           })}
+          {filtradas.length > 120 && (
+            <p style={{ fontSize: 11, color: 'var(--cor-tinta-terciaria)', padding: '8px 16px' }}>
+              + {filtradas.length - 120} RPs não exibidas — refine a busca ou os filtros.
+            </p>
+          )}
         </div>
 
         <div
@@ -239,7 +251,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             position: 'sticky',
             bottom: 0,
             background: 'var(--cor-marca)',
-            color: '#fff',
+            color: 'var(--cor-superficie)',
             padding: '10px 22px',
             display: 'flex',
             alignItems: 'center',
@@ -248,7 +260,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
           }}
         >
           <span>
-            {resumo.quantidade} RPs Disponíveis · {money(resumo.totalTabela)}
+            {resumo.quantidade} RPs Disponíveis · {formatarMoeda(resumo.totalTabela)}
             {resumo.anunciantesDistintos > 1 ? ` · proposta única com ${resumo.anunciantesDistintos} anunciantes` : ''}
           </span>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -256,9 +268,9 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
               type="button"
               disabled
               style={{
-                border: '1px solid #fff',
+                border: '1px solid var(--cor-superficie)',
                 background: 'transparent',
-                color: '#fff',
+                color: 'var(--cor-superficie)',
                 borderRadius: 'var(--raio-botao)',
                 padding: '7px 14px',
                 fontSize: 12,
@@ -273,7 +285,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
               disabled
               style={{
                 border: 'none',
-                background: '#fff',
+                background: 'var(--cor-superficie)',
                 color: 'var(--cor-tinta-principal)',
                 borderRadius: 'var(--raio-botao)',
                 padding: '7px 14px',

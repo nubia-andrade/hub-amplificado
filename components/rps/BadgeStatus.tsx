@@ -5,7 +5,7 @@ interface BadgeStatusProps {
   elegivel: boolean;
 }
 
-const CORES: Record<string, { texto: string; fundo: string; borda: string }> = {
+const CORES: Record<StatusComercial | 'Não elegível', { texto: string; fundo: string; borda: string }> = {
   Disponível: {
     texto: 'var(--cor-sucesso-texto)',
     fundo: 'var(--cor-sucesso-fundo)',

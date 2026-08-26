@@ -9,12 +9,26 @@ export interface FiltrosRps {
   executivo: string;
 }
 
+function normalizar(texto: string): string {
+  return texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '');
+}
+
 export function filtrarRps(rps: RpComStatus[], filtros: FiltrosRps): RpComStatus[] {
   const busca = filtros.busca.trim().toLowerCase();
 
   return rps.filter((rp) => {
-    if (busca && !`${rp.rp} ${rp.anunciante} ${rp.cnpj}`.toLowerCase().includes(busca)) {
-      return false;
+    if (busca) {
+      const alvo = normalizar(busca);
+      const combina =
+        normalizar(rp.rp).includes(alvo) ||
+        normalizar(rp.anunciante).includes(alvo) ||
+        normalizar(rp.cnpj).includes(alvo);
+      if (!combina) {
+        return false;
+      }
     }
     if (filtros.praca && rp.exib !== filtros.praca) {
       return false;

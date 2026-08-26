@@ -57,6 +57,22 @@ describe('filtrarRps', () => {
   it('sem filtros ativos, retorna todas as RPs', () => {
     expect(filtrarRps(rps, { busca: '', praca: '', status: '', elegibilidade: 'todas', executivo: '' })).toHaveLength(3);
   });
+
+  it('filtra por executivo', () => {
+    const rpsComExecutivo = [
+      criarRpDeTeste({ rp: '1', executivo: 'Milena Dabul Stork(N)' }),
+      criarRpDeTeste({ rp: '2', executivo: 'Fabio Couto (MV)' }),
+    ];
+    expect(
+      filtrarRps(rpsComExecutivo, {
+        busca: '',
+        praca: '',
+        status: '',
+        elegibilidade: 'todas',
+        executivo: 'Fabio Couto (MV)',
+      })
+    ).toEqual([rpsComExecutivo[1]]);
+  });
 });
 
 describe('minhasRps', () => {
@@ -71,6 +87,10 @@ describe('minhasRps', () => {
 
   it('para papel gerente, retorna todas as RPs independente do executivoRaw', () => {
     expect(minhasRps(rps, 'gerente', null)).toHaveLength(2);
+  });
+
+  it('para papel executivo com executivoRaw null, retorna lista vazia', () => {
+    expect(minhasRps(rps, 'executivo', null)).toEqual([]);
   });
 });
 
@@ -105,6 +125,14 @@ describe('estadoSelecaoTodas', () => {
 
   it('retorna "todas" quando todas as selecionáveis estão marcadas (RP não selecionável não conta)', () => {
     expect(estadoSelecaoTodas(rps, ['1', '2'])).toBe('todas');
+  });
+
+  it('retorna "nenhuma" quando nenhuma RP da lista é selecionável', () => {
+    const rpsSemSelecionaveis = [
+      criarRpDeTeste({ rp: '1', elegivel: false, status: 'Disponível' }),
+      criarRpDeTeste({ rp: '2', elegivel: true, status: 'Em negociação' }),
+    ];
+    expect(estadoSelecaoTodas(rpsSemSelecionaveis, [])).toBe('nenhuma');
   });
 });
 

@@ -1,12 +1,9 @@
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
+import { formatarMoeda } from '@/lib/rps/formato';
 import { BadgeStatus } from './BadgeStatus';
 
 interface PainelDetalheProps {
   rp: RpComStatus;
-}
-
-function money(valor: number): string {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 });
 }
 
 const CARD_STYLE: React.CSSProperties = {
@@ -68,8 +65,8 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
             Não elegível
           </p>
           <ul style={{ margin: 0, paddingLeft: 16, fontSize: 11.5, color: 'var(--cor-erro-texto)' }}>
-            {rp.motivos.map((motivo) => (
-              <li key={motivo}>{motivo}</li>
+            {rp.motivos.map((motivo, indice) => (
+              <li key={indice}>{motivo}</li>
             ))}
           </ul>
         </div>
@@ -86,8 +83,8 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
           </tr>
         </thead>
         <tbody>
-          {rp.linhas.map((linha) => (
-            <tr key={linha.chave} style={{ borderTop: '1px solid var(--cor-borda-sutil)' }}>
+          {rp.linhas.map((linha, indice) => (
+            <tr key={indice} style={{ borderTop: '1px solid var(--cor-borda-sutil)' }}>
               <td style={{ padding: '6px 0' }}>
                 {linha.programa}{' '}
                 <span style={{ fontSize: 10, color: 'var(--cor-tinta-terciaria)' }}>{linha.chave}</span>
@@ -95,7 +92,7 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
               <td style={{ padding: '6px 0' }}>{linha.secund}″</td>
               <td style={{ padding: '6px 0' }}>{linha.nDatas}</td>
               <td style={{ padding: '6px 0', textAlign: 'right' }}>
-                {linha.total !== null ? money(linha.total) : '—'}
+                {linha.total !== null ? formatarMoeda(linha.total) : '—'}
               </td>
             </tr>
           ))}
@@ -104,7 +101,7 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12.5, fontWeight: 600, marginBottom: 4 }}>
         <span>Total de tabela</span>
-        <span>{rp.elegivel ? money(rp.valorTabela) : '—'}</span>
+        <span>{rp.elegivel ? formatarMoeda(rp.valorTabela) : '—'}</span>
       </div>
       <p style={{ fontSize: 11, color: 'var(--cor-tinta-terciaria)', marginBottom: 16 }}>
         {rp.nDatas} datas de exibição · {rp.linhas.length} combinações programa/segundagem
@@ -136,7 +133,7 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
             padding: 9,
             border: 'none',
             background: rp.elegivel ? 'var(--gradiente-marca)' : 'var(--cor-desabilitado-fundo)',
-            color: rp.elegivel ? '#fff' : 'var(--cor-desabilitado-texto)',
+            color: rp.elegivel ? 'var(--cor-superficie)' : 'var(--cor-desabilitado-texto)',
             borderRadius: 'var(--raio-botao)',
             fontSize: 12,
             fontWeight: 600,

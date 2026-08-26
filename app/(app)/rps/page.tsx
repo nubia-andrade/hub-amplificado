@@ -10,6 +10,8 @@ const MARGEM_DIAS_UTEIS = 2;
 
 export default async function MinhasRPsPage() {
   const sessao = await lerSessao();
+  // Redundante com o guard do layout, mas necessário para o TypeScript estreitar
+  // `sessao` para não-nulo abaixo (papel/executivoRaw são usados logo em seguida).
   if (!sessao) {
     redirect('/login');
   }
