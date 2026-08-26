@@ -68,9 +68,14 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
       const link = document.createElement('a');
       link.href = url;
       link.download = `proposta-${rpsSelecionadas.map((rp) => rp.rp).join('-')}.pdf`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
       link.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
       aoFechar();
+    } catch {
+      setErro('Não foi possível gerar a proposta.');
     } finally {
       setGerando(false);
     }
@@ -115,6 +120,7 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
             type="number"
             min={0}
             max={ALCADA_MAXIMA}
+            step="0.5"
             value={percentualDesconto}
             onChange={(evento) => setPercentualDesconto(Number(evento.target.value))}
             style={{

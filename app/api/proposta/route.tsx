@@ -29,10 +29,18 @@ export async function POST(request: Request): Promise<Response> {
     return erro('Sessão não encontrada.', 401);
   }
 
-  const corpo = (await request.json()) as CorpoRequisicao;
+  let corpo: CorpoRequisicao;
+  try {
+    corpo = (await request.json()) as CorpoRequisicao;
+  } catch {
+    return erro('Corpo da requisição inválido.', 400);
+  }
 
   if (!Array.isArray(corpo.rpIds) || corpo.rpIds.length === 0) {
     return erro('Selecione ao menos uma RP.', 400);
+  }
+  if (corpo.rpIds.length > 50) {
+    return erro('Selecione no máximo 50 RPs por vez.', 400);
   }
   if (
     typeof corpo.percentualDesconto !== 'number' ||
@@ -42,13 +50,15 @@ export async function POST(request: Request): Promise<Response> {
     return erro(`Desconto deve estar entre 0% e ${ALCADA_MAXIMA}% (alçada do executivo).`, 400);
   }
 
+  const rpIdsUnicos = [...new Set(corpo.rpIds)];
+
   const repositorio = criarRepositorioMock();
   const rpsComElegibilidade = listarRpsComElegibilidade(repositorio, new Date(), MARGEM_DIAS_UTEIS);
   const rpsComStatus = rpsComElegibilidade.map(paraRpComStatus);
   const rpsDaCarteira = minhasRps(rpsComStatus, sessao.papel, sessao.executivoRaw);
   const rpsSelecionaveis = rpsDaCarteira.filter(ehSelecionavel);
 
-  const rpsEscolhidas = corpo.rpIds.map((id) => rpsSelecionaveis.find((rp) => rp.rp === id));
+  const rpsEscolhidas = rpIdsUnicos.map((id) => rpsSelecionaveis.find((rp) => rp.rp === id));
   if (rpsEscolhidas.some((rp) => rp === undefined)) {
     return erro('Uma ou mais RPs selecionadas não estão disponíveis para você.', 400);
   }
@@ -56,14 +66,21 @@ export async function POST(request: Request): Promise<Response> {
   const propostaCaPorChave = obterPropostaCaPorChave();
   const dataGeracao = new Intl.DateTimeFormat('pt-BR').format(new Date());
 
-  const paginas: PaginaProposta[] = rpsEscolhidas.map((rp) => {
+  const paginas: PaginaProposta[] = [];
+  for (const rp of rpsEscolhidas) {
     const configuracaoAgencia = corpo.agencias?.[rp!.rp];
-    const possuiAgencia = configuracaoAgencia?.possui ?? Boolean(obterAgenciaMock(rp!.rp));
-    const nomeAgencia = possuiAgencia ? (configuracaoAgencia?.nome || obterAgenciaMock(rp!.rp)) : null;
+    const agenciaMock = obterAgenciaMock(rp!.rp);
+    const possuiAgencia =
+      configuracaoAgencia === undefined ? Boolean(agenciaMock) : configuracaoAgencia.possui === true;
+    const nomeAgencia = possuiAgencia ? (configuracaoAgencia?.nome || agenciaMock) : null;
+
+    if (possuiAgencia && !nomeAgencia) {
+      return erro(`Informe o nome da agência para a RP ${rp!.rp}.`, 400);
+    }
 
     const { linhas, total } = montarLinhasProposta(rp!, corpo.percentualDesconto, possuiAgencia, propostaCaPorChave);
 
-    return {
+    paginas.push({
       rp: rp!.rp,
       cliente: rp!.anunciante,
       executivo: rp!.executivo,
@@ -71,8 +88,8 @@ export async function POST(request: Request): Promise<Response> {
       mesAno: mesDaRp(rp!),
       linhas,
       total,
-    };
-  });
+    });
+  }
 
   const buffer = await renderToBuffer(<PropostaDocumento paginas={paginas} dataGeracao={dataGeracao} />);
 
@@ -80,7 +97,7 @@ export async function POST(request: Request): Promise<Response> {
     status: 200,
     headers: {
       'content-type': 'application/pdf',
-      'content-disposition': `attachment; filename="proposta-${corpo.rpIds.join('-')}.pdf"`,
+      'content-disposition': `attachment; filename="proposta-${rpIdsUnicos.join('-')}.pdf"`,
     },
   });
 }

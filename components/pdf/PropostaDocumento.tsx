@@ -1,4 +1,3 @@
-// components/pdf/PropostaDocumento.tsx
 import { join } from 'node:path';
 import {
   Document,
@@ -199,7 +198,7 @@ function PaginaDaProposta({ pagina, dataGeracao }: { pagina: PaginaProposta; dat
         </View>
 
         <View style={styles.tabela}>
-          <View style={[styles.linhaTabela, styles.linhaCabecalhoTabela]}>
+          <View style={[styles.linhaTabela, styles.linhaCabecalhoTabela]} fixed>
             <Text style={[styles.celula, styles.textoCabecalhoCelula, styles.colSigla]}>Sigla</Text>
             <Text style={[styles.celula, styles.textoCabecalhoCelula, styles.colPrograma]}>Programa</Text>
             <Text style={[styles.celula, styles.textoCabecalhoCelula, styles.colSecundagem]}>Secundagem</Text>
@@ -214,7 +213,7 @@ function PaginaDaProposta({ pagina, dataGeracao }: { pagina: PaginaProposta; dat
           </View>
 
           {pagina.linhas.map((linha, indice) => (
-            <View key={indice} style={styles.linhaTabela}>
+            <View key={indice} style={styles.linhaTabela} wrap={false}>
               <Text style={[styles.celula, styles.colSigla]}>{linha.sigla}</Text>
               <Text style={[styles.celula, styles.colPrograma]}>{linha.programa}</Text>
               <Text style={[styles.celula, styles.colSecundagem]}>{linha.secundagem}</Text>
@@ -225,13 +224,13 @@ function PaginaDaProposta({ pagina, dataGeracao }: { pagina: PaginaProposta; dat
                 {linha.totalImpressoes.toLocaleString('pt-BR')}
               </Text>
               <Text style={[styles.celula, styles.colTabela]}>{formatarMoeda(linha.valorTabela)}</Text>
-              <Text style={[styles.celula, styles.colDesconto]}>{linha.percentualDesconto}%</Text>
+              <Text style={[styles.celula, styles.colDesconto]}>{linha.percentualDesconto.toLocaleString('pt-BR')}%</Text>
               <Text style={[styles.celula, styles.colBruto]}>{formatarMoeda(linha.valorBrutoNegociado)}</Text>
               <Text style={[styles.celula, styles.colLiquido]}>{formatarMoeda(linha.valorLiquido)}</Text>
             </View>
           ))}
 
-          <View style={[styles.linhaTabela, styles.linhaTotal]}>
+          <View style={[styles.linhaTabela, styles.linhaTotal]} wrap={false}>
             <Text style={[styles.celula, styles.textoTotal, styles.colSigla]}>Total</Text>
             <Text style={[styles.celula, styles.colPrograma]} />
             <Text style={[styles.celula, styles.colSecundagem]} />
@@ -244,7 +243,7 @@ function PaginaDaProposta({ pagina, dataGeracao }: { pagina: PaginaProposta; dat
             <Text style={[styles.celula, styles.textoTotal, styles.colTabela]}>
               {formatarMoeda(pagina.total.valorTabela)}
             </Text>
-            <Text style={[styles.celula, styles.textoTotal, styles.colDesconto]}>{pagina.total.percentualDesconto}%</Text>
+            <Text style={[styles.celula, styles.textoTotal, styles.colDesconto]}>{pagina.total.percentualDesconto.toLocaleString('pt-BR')}%</Text>
             <Text style={[styles.celula, styles.textoTotal, styles.colBruto]}>
               {formatarMoeda(pagina.total.valorBrutoNegociado)}
             </Text>
