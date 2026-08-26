@@ -16,6 +16,7 @@ import {
 import { BadgeStatus } from './BadgeStatus';
 import { ModalGerarProposta } from './ModalGerarProposta';
 import { PainelDetalhe } from './PainelDetalhe';
+import { ResumoConsolidado } from './ResumoConsolidado';
 
 interface ListaRpsProps {
   rps: RpComStatus[];
@@ -259,7 +260,9 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             padding: 16,
           }}
         >
-          {detalheId ? (
+          {selecionadas.length >= 2 ? (
+            <ResumoConsolidado rps={rps.filter((rp) => selecionadas.includes(rp.rp))} />
+          ) : detalheId ? (
             (() => {
               const rpAberta = rps.find((rp) => rp.rp === detalheId);
               return rpAberta ? (
