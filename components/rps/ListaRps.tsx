@@ -12,6 +12,7 @@ import {
   type FiltrosRps,
 } from '@/lib/rps/regrasLista';
 import { BadgeStatus } from './BadgeStatus';
+import { ModalGerarProposta } from './ModalGerarProposta';
 import { PainelDetalhe } from './PainelDetalhe';
 
 interface ListaRpsProps {
@@ -31,6 +32,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
   const [filtros, setFiltros] = useState<FiltrosRps>(FILTROS_INICIAIS);
   const [selecionadas, setSelecionadas] = useState<string[]>([]);
   const [detalheId, setDetalheId] = useState<string | null>(null);
+  const [modalPropostaAberto, setModalPropostaAberto] = useState(false);
   const checkboxCabecalhoRef = useRef<HTMLInputElement>(null);
 
   const pracas = useMemo(() => [...new Set(rps.map((rp) => rp.exib))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [rps]);
@@ -301,7 +303,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
             </button>
             <button
               type="button"
-              disabled
+              onClick={() => setModalPropostaAberto(true)}
               style={{
                 border: 'none',
                 background: 'var(--cor-superficie)',
@@ -310,14 +312,20 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                 padding: '7px 14px',
                 fontSize: 12,
                 fontWeight: 600,
-                opacity: 0.5,
-                cursor: 'not-allowed',
+                cursor: 'pointer',
               }}
             >
               Gerar proposta
             </button>
           </div>
         </div>
+      )}
+
+      {modalPropostaAberto && (
+        <ModalGerarProposta
+          rpsSelecionadas={rps.filter((rp) => selecionadas.includes(rp.rp))}
+          aoFechar={() => setModalPropostaAberto(false)}
+        />
       )}
     </div>
   );
