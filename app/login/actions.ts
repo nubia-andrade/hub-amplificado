@@ -14,7 +14,7 @@ export async function entrar(_estado: EstadoLogin, formData: FormData): Promise<
 
   const executivo = autenticar(email, senha);
   if (!executivo) {
-    return { erro: 'E-mail ou senha invalidos.' };
+    return { erro: 'E-mail ou senha inválidos.' };
   }
 
   await criarSessao(executivo);

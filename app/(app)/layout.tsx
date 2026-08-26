@@ -1,8 +1,13 @@
+import { redirect } from 'next/navigation';
 import { lerSessao } from '@/lib/auth/session';
 import { sair } from './actions';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const sessao = await lerSessao();
+
+  if (!sessao) {
+    redirect('/login');
+  }
 
   return (
     <>
@@ -25,7 +30,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               background: 'var(--cor-tinta-principal)',
               color: '#fff',
               padding: '6px 12px',
-              borderRadius: 6,
+              borderRadius: 'var(--raio-input)',
               fontSize: 12,
             }}
           >
@@ -34,9 +39,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 12.5, fontWeight: 600 }}>{sessao?.nome}</div>
+            <div style={{ fontSize: 12.5, fontWeight: 600 }}>{sessao.nome}</div>
             <div style={{ fontSize: 11, color: 'var(--cor-tinta-secundaria)' }}>
-              {sessao?.papel === 'gerente' ? 'Gerente · visao de equipe' : 'Executivo comercial'}
+              {sessao.papel === 'gerente' ? 'Gerente · visão de equipe' : 'Executivo comercial'}
             </div>
           </div>
           <form action={sair}>
@@ -45,7 +50,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               style={{
                 border: '1px solid var(--cor-borda)',
                 background: 'transparent',
-                borderRadius: 6,
+                borderRadius: 'var(--raio-input)',
                 padding: '6px 12px',
                 fontSize: 12,
                 cursor: 'pointer',

@@ -2,15 +2,10 @@
 
 import { useActionState } from 'react';
 import { entrar, type EstadoLogin } from './actions';
+import { listarCarteira } from '@/lib/data/carteira';
 
 const estadoInicial: EstadoLogin = {};
-
-const ATALHOS = [
-  { email: 'milena.dabul@empresa.com.br', nome: 'Milena Dabul Stork' },
-  { email: 'fabio.couto@empresa.com.br', nome: 'Fabio Couto' },
-  { email: 'karina.martinelli@empresa.com.br', nome: 'Karina Martinelli' },
-  { email: 'gerente@empresa.com.br', nome: 'visao de gerencia' },
-];
+const ATALHOS = listarCarteira();
 
 export default function LoginPage() {
   const [estado, acao, pendente] = useActionState(entrar, estadoInicial);
@@ -20,9 +15,9 @@ export default function LoginPage() {
       <div
         style={{
           width: 400,
-          background: '#fff',
+          background: 'var(--cor-superficie-alt)',
           border: '1px solid var(--cor-borda)',
-          borderRadius: 12,
+          borderRadius: 'var(--raio-modal)',
           padding: 32,
           boxShadow: 'var(--sombra-card)',
         }}
@@ -67,7 +62,7 @@ export default function LoginPage() {
               width: '100%',
               padding: '10px 11px',
               border: '1px solid var(--cor-borda-input)',
-              borderRadius: 7,
+              borderRadius: 'var(--raio-botao)',
               fontSize: 13,
               marginBottom: 14,
             }}
@@ -85,14 +80,14 @@ export default function LoginPage() {
               width: '100%',
               padding: '10px 11px',
               border: '1px solid var(--cor-borda-input)',
-              borderRadius: 7,
+              borderRadius: 'var(--raio-botao)',
               fontSize: 13,
               marginBottom: 14,
             }}
           />
 
           {estado.erro && (
-            <p style={{ fontSize: 12, color: 'oklch(0.52 0.15 30)', margin: '0 0 14px' }}>
+            <p style={{ fontSize: 12, color: 'var(--cor-erro-texto)', margin: '0 0 14px' }}>
               {estado.erro}
             </p>
           )}
@@ -108,7 +103,7 @@ export default function LoginPage() {
               fontWeight: 600,
               fontSize: 13,
               border: 'none',
-              borderRadius: 7,
+              borderRadius: 'var(--raio-botao)',
               cursor: pendente ? 'default' : 'pointer',
             }}
           >
@@ -125,7 +120,7 @@ export default function LoginPage() {
             margin: '0 0 8px',
           }}
         >
-          Ambiente de demonstracao — qualquer senha
+          Ambiente de demonstração — qualquer senha
         </p>
         {ATALHOS.map((a) => (
           <p
