@@ -1,3 +1,7 @@
-export default function Home() {
-  return <p>Hub Amplificado</p>;
+import { redirect } from 'next/navigation';
+import { lerSessao } from '@/lib/auth/session';
+
+export default async function RootPage() {
+  const sessao = await lerSessao();
+  redirect(sessao ? '/rps' : '/login');
 }
