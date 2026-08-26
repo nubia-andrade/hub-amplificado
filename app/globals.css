@@ -48,6 +48,11 @@
   --cor-esgotado-fundo: #e9e7ee;
   --cor-esgotado-borda: #1e1b2e;
 
+  /* Praça de exibição (Mapa de Inserção) — tons decorativos, não semânticos de status */
+  --cor-praca-rj: #ff5e3a;
+  --cor-praca-net: #2d6bff;
+  --cor-praca-sp1: #7a2ff2;
+
   --overlay-modal: rgba(20, 19, 24, 0.42);
 
   --raio-chip: 999px;

@@ -37,7 +37,21 @@ const NOMES_MES = [
 
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-const MAX_SIGLAS_VISIVEIS = 4;
+const COLUNAS_SIGLAS = 5;
+const LINHAS_SIGLAS = 4;
+const MAX_SIGLAS_VISIVEIS = COLUNAS_SIGLAS * LINHAS_SIGLAS;
+
+const CORES_PRACA: Record<string, string> = {
+  RJ: 'var(--cor-praca-rj)',
+  NET: 'var(--cor-praca-net)',
+  SP1: 'var(--cor-praca-sp1)',
+};
+
+const LEGENDA_PRACAS = [
+  { praca: 'RJ', cor: 'var(--cor-praca-rj)' },
+  { praca: 'NET', cor: 'var(--cor-praca-net)' },
+  { praca: 'SP1', cor: 'var(--cor-praca-sp1)' },
+];
 
 export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
   const [clienteSelecionado, setClienteSelecionado] = useState('');
@@ -175,6 +189,53 @@ export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
             </button>
           </div>
 
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 14 }}>
+            <span style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', color: 'var(--cor-tinta-terciaria)' }}>
+              Praça
+            </span>
+            {LEGENDA_PRACAS.map((item) => (
+              <span key={item.praca} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: item.cor,
+                    display: 'inline-block',
+                  }}
+                />
+                {item.praca}
+              </span>
+            ))}
+            <span style={{ width: 1, height: 14, background: 'var(--cor-borda-forte)' }} />
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 'var(--raio-chip)',
+                  background: 'var(--cor-sucesso-fundo)',
+                  border: '1px solid var(--cor-sucesso-borda)',
+                  display: 'inline-block',
+                }}
+              />
+              Elegível
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11 }}>
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 'var(--raio-chip)',
+                  background: 'var(--cor-esgotado-fundo)',
+                  border: '1px solid var(--cor-esgotado-borda)',
+                  display: 'inline-block',
+                }}
+              />
+              Não elegível
+            </span>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6, marginBottom: 6 }}>
             {DIAS_SEMANA.map((dia) => (
               <div key={dia} style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', color: 'var(--cor-tinta-terciaria)', textAlign: 'center' }}>
@@ -206,27 +267,49 @@ export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
                     <div style={{ fontSize: 10, color: 'var(--cor-tinta-terciaria)', marginBottom: 3 }}>
                       {Number(diaIso.slice(-2))}
                     </div>
-                    {visiveis.map((entrada, indiceEntrada) => (
-                      <div
-                        key={`${entrada.sigla}-${indiceEntrada}`}
-                        style={{
-                          fontSize: 9,
-                          fontWeight: 600,
-                          padding: '1px 4px',
-                          marginBottom: 2,
-                          borderRadius: 'var(--raio-chip)',
-                          color: entrada.elegivel ? 'var(--cor-sucesso-texto)' : 'var(--cor-esgotado-texto)',
-                          background: entrada.elegivel ? 'var(--cor-sucesso-fundo)' : 'var(--cor-esgotado-fundo)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
-                        {entrada.sigla}
-                      </div>
-                    ))}
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${COLUNAS_SIGLAS}, 1fr)`,
+                        gap: 2,
+                      }}
+                    >
+                      {visiveis.map((entrada) => (
+                        <div
+                          key={entrada.chave}
+                          title={`${entrada.sigla} · ${entrada.praca}`}
+                          style={{
+                            fontSize: 8,
+                            fontWeight: 600,
+                            padding: '1px 2px',
+                            borderRadius: 'var(--raio-chip)',
+                            color: entrada.elegivel ? 'var(--cor-sucesso-texto)' : 'var(--cor-esgotado-texto)',
+                            background: entrada.elegivel ? 'var(--cor-sucesso-fundo)' : 'var(--cor-esgotado-fundo)',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 5,
+                              height: 5,
+                              borderRadius: '50%',
+                              flexShrink: 0,
+                              background: CORES_PRACA[entrada.praca] ?? 'var(--cor-tinta-fraca)',
+                            }}
+                          />
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{entrada.sigla}</span>
+                        </div>
+                      ))}
+                    </div>
                     {restantes > 0 && (
-                      <div style={{ fontSize: 9, color: 'var(--cor-tinta-terciaria)' }}>+{restantes}</div>
+                      <div style={{ fontSize: 9, color: 'var(--cor-tinta-terciaria)', marginTop: 2 }}>
+                        +{restantes}
+                      </div>
                     )}
                   </div>
                 );

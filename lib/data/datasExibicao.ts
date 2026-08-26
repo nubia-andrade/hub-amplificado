@@ -15,6 +15,7 @@ export interface DataExibicao {
   rp: string;
   sigla: string;
   chave: string;
+  praca: string;
   data: string;
 }
 
@@ -41,6 +42,7 @@ export function carregarDatasExibicao(): DataExibicao[] {
     rp: String(linha.RP),
     sigla: linha.Sigla,
     chave: `${linha.Sigla}_${linha.Exib}`,
+    praca: linha.Exib,
     data: paraIso(linha['Data Exib']),
   }));
 

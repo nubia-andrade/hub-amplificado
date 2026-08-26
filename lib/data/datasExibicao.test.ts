@@ -13,10 +13,13 @@ describe('criarRepositorioDatasExibicaoMock', () => {
     expect(linhas).toHaveLength(110);
   });
 
-  it('inclui uma linha com sigla N20H, chave N20H_RJ e data 2026-09-01 para a RP 702290', () => {
+  it('inclui uma linha com sigla N20H, chave N20H_RJ, praça RJ e data 2026-09-01 para a RP 702290', () => {
     const linhas = repositorio.listarDatasExibicao().filter((linha) => linha.rp === '702290');
     expect(
-      linhas.some((linha) => linha.sigla === 'N20H' && linha.chave === 'N20H_RJ' && linha.data === '2026-09-01')
+      linhas.some(
+        (linha) =>
+          linha.sigla === 'N20H' && linha.chave === 'N20H_RJ' && linha.praca === 'RJ' && linha.data === '2026-09-01'
+      )
     ).toBe(true);
   });
 

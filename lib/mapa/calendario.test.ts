@@ -28,51 +28,69 @@ describe('agruparDatasPorDia', () => {
   it('agrupa siglas por dia, marcando elegivel a partir da RP correspondente', () => {
     const rps = [criarRpDeTeste({ rp: '1', elegivel: true }), criarRpDeTeste({ rp: '2', elegivel: false })];
     const datas: DataExibicao[] = [
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
-      { rp: '2', sigla: 'DEF', chave: 'DEF_RJ', data: '2026-09-01' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
+      { rp: '2', sigla: 'DEF', chave: 'DEF_RJ', praca: 'RJ', data: '2026-09-01' },
     ];
 
     const mapa = agruparDatasPorDia(rps, datas);
 
     expect(mapa['2026-09-01']).toEqual(
       expect.arrayContaining([
-        { sigla: 'ABC', elegivel: true },
-        { sigla: 'DEF', elegivel: false },
+        { sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', elegivel: true },
+        { sigla: 'DEF', chave: 'DEF_RJ', praca: 'RJ', elegivel: false },
       ])
     );
   });
 
   it('ignora datas de RPs fora da lista informada', () => {
     const rps = [criarRpDeTeste({ rp: '1', elegivel: true })];
-    const datas: DataExibicao[] = [{ rp: '999', sigla: 'XYZ', chave: 'XYZ_RJ', data: '2026-09-01' }];
+    const datas: DataExibicao[] = [{ rp: '999', sigla: 'XYZ', chave: 'XYZ_RJ', praca: 'RJ', data: '2026-09-01' }];
 
     const mapa = agruparDatasPorDia(rps, datas);
 
     expect(mapa['2026-09-01']).toBeUndefined();
   });
 
-  it('mescla a mesma sigla no mesmo dia com AND de elegibilidade (elegível só se todas as ocorrências forem elegíveis)', () => {
+  it('mescla a mesma chave (sigla+praça) no mesmo dia com AND de elegibilidade (elegível só se todas as ocorrências forem elegíveis)', () => {
     const rps = [criarRpDeTeste({ rp: '1', elegivel: false }), criarRpDeTeste({ rp: '2', elegivel: true })];
     const datas: DataExibicao[] = [
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
-      { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
+      { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
     ];
 
     const mapa = agruparDatasPorDia(rps, datas);
 
-    expect(mapa['2026-09-01']).toEqual([{ sigla: 'ABC', elegivel: false }]);
+    expect(mapa['2026-09-01']).toEqual([{ sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', elegivel: false }]);
   });
 
-  it('mantém elegivel true quando todas as ocorrências da mesma sigla no mesmo dia são elegíveis', () => {
+  it('mantém elegivel true quando todas as ocorrências da mesma chave no mesmo dia são elegíveis', () => {
     const rps = [criarRpDeTeste({ rp: '1', elegivel: true }), criarRpDeTeste({ rp: '2', elegivel: true })];
     const datas: DataExibicao[] = [
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
-      { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
+      { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
     ];
 
     const mapa = agruparDatasPorDia(rps, datas);
 
-    expect(mapa['2026-09-01']).toEqual([{ sigla: 'ABC', elegivel: true }]);
+    expect(mapa['2026-09-01']).toEqual([{ sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', elegivel: true }]);
+  });
+
+  it('mantém entradas separadas para a mesma sigla em praças diferentes no mesmo dia', () => {
+    const rps = [criarRpDeTeste({ rp: '1', elegivel: true }), criarRpDeTeste({ rp: '2', elegivel: false })];
+    const datas: DataExibicao[] = [
+      { rp: '1', sigla: 'BPRA', chave: 'BPRA_RJ', praca: 'RJ', data: '2026-09-01' },
+      { rp: '2', sigla: 'BPRA', chave: 'BPRA_NET', praca: 'NET', data: '2026-09-01' },
+    ];
+
+    const mapa = agruparDatasPorDia(rps, datas);
+
+    expect(mapa['2026-09-01']).toEqual(
+      expect.arrayContaining([
+        { sigla: 'BPRA', chave: 'BPRA_RJ', praca: 'RJ', elegivel: true },
+        { sigla: 'BPRA', chave: 'BPRA_NET', praca: 'NET', elegivel: false },
+      ])
+    );
+    expect(mapa['2026-09-01']).toHaveLength(2);
   });
 });
 
@@ -80,8 +98,8 @@ describe('primeiroMesComDatas', () => {
   it('retorna o ano/mês da data mais antiga entre as RPs informadas', () => {
     const rps = [criarRpDeTeste({ rp: '1' })];
     const datas: DataExibicao[] = [
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-10-15' },
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-10-15' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
     ];
 
     expect(primeiroMesComDatas(rps, datas)).toEqual({ ano: 2026, mes: 9 });
@@ -97,8 +115,8 @@ describe('ultimoMesComDatas', () => {
   it('retorna o ano/mês da data mais recente entre as RPs informadas', () => {
     const rps = [criarRpDeTeste({ rp: '1' })];
     const datas: DataExibicao[] = [
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-10-15' },
-      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-10-15' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', praca: 'RJ', data: '2026-09-01' },
     ];
 
     expect(ultimoMesComDatas(rps, datas)).toEqual({ ano: 2026, mes: 10 });

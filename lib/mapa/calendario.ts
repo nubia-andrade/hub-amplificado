@@ -3,6 +3,8 @@ import type { RpComStatus } from '@/lib/rps/rpComStatus';
 
 export interface EntradaDia {
   sigla: string;
+  chave: string;
+  praca: string;
   elegivel: boolean;
 }
 
@@ -19,11 +21,11 @@ export function agruparDatasPorDia(rps: RpComStatus[], datasExibicao: DataExibic
     }
 
     const entradas = mapa[registro.data] ?? (mapa[registro.data] = []);
-    const existente = entradas.find((entrada) => entrada.sigla === registro.sigla);
+    const existente = entradas.find((entrada) => entrada.chave === registro.chave);
     if (existente) {
       existente.elegivel = existente.elegivel && elegivel;
     } else {
-      entradas.push({ sigla: registro.sigla, elegivel });
+      entradas.push({ sigla: registro.sigla, chave: registro.chave, praca: registro.praca, elegivel });
     }
   }
 
@@ -32,7 +34,7 @@ export function agruparDatasPorDia(rps: RpComStatus[], datasExibicao: DataExibic
       if (a.elegivel !== b.elegivel) {
         return a.elegivel ? -1 : 1;
       }
-      return a.sigla.localeCompare(b.sigla, 'pt-BR');
+      return a.sigla.localeCompare(b.sigla, 'pt-BR') || a.praca.localeCompare(b.praca, 'pt-BR');
     });
   }
 
