@@ -4,8 +4,8 @@ import { criarRepositorioDatasExibicaoMock } from './datasExibicao';
 describe('criarRepositorioDatasExibicaoMock', () => {
   const repositorio = criarRepositorioDatasExibicaoMock();
 
-  it('carrega as 4339 linhas de exibição da planilha bruta', () => {
-    expect(repositorio.listarDatasExibicao()).toHaveLength(4339);
+  it('carrega as 4469 linhas de exibição da planilha bruta', () => {
+    expect(repositorio.listarDatasExibicao()).toHaveLength(4469);
   });
 
   it('tem 110 linhas para a RP 702290 (5 siglas × 22 datas cada)', () => {
