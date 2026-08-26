@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Rp } from '@/lib/data/rp';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
 import type { DataExibicao } from '@/lib/data/datasExibicao';
-import { agruparDatasPorDia, construirGradeDoMes, primeiroMesComDatas } from './calendario';
+import { agruparDatasPorDia, construirGradeDoMes, primeiroMesComDatas, ultimoMesComDatas } from './calendario';
 
 function criarRpDeTeste(overrides: Partial<Rp> = {}): RpComStatus {
   return {
@@ -51,8 +51,20 @@ describe('agruparDatasPorDia', () => {
     expect(mapa['2026-09-01']).toBeUndefined();
   });
 
-  it('mescla a mesma sigla no mesmo dia com OR de elegibilidade (elegível se qualquer ocorrência for elegível)', () => {
+  it('mescla a mesma sigla no mesmo dia com AND de elegibilidade (elegível só se todas as ocorrências forem elegíveis)', () => {
     const rps = [criarRpDeTeste({ rp: '1', elegivel: false }), criarRpDeTeste({ rp: '2', elegivel: true })];
+    const datas: DataExibicao[] = [
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+      { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+    ];
+
+    const mapa = agruparDatasPorDia(rps, datas);
+
+    expect(mapa['2026-09-01']).toEqual([{ sigla: 'ABC', elegivel: false }]);
+  });
+
+  it('mantém elegivel true quando todas as ocorrências da mesma sigla no mesmo dia são elegíveis', () => {
+    const rps = [criarRpDeTeste({ rp: '1', elegivel: true }), criarRpDeTeste({ rp: '2', elegivel: true })];
     const datas: DataExibicao[] = [
       { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
       { rp: '2', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
@@ -78,6 +90,23 @@ describe('primeiroMesComDatas', () => {
   it('retorna null quando não há datas para as RPs informadas', () => {
     const rps = [criarRpDeTeste({ rp: '1' })];
     expect(primeiroMesComDatas(rps, [])).toBeNull();
+  });
+});
+
+describe('ultimoMesComDatas', () => {
+  it('retorna o ano/mês da data mais recente entre as RPs informadas', () => {
+    const rps = [criarRpDeTeste({ rp: '1' })];
+    const datas: DataExibicao[] = [
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-10-15' },
+      { rp: '1', sigla: 'ABC', chave: 'ABC_RJ', data: '2026-09-01' },
+    ];
+
+    expect(ultimoMesComDatas(rps, datas)).toEqual({ ano: 2026, mes: 10 });
+  });
+
+  it('retorna null quando não há datas para as RPs informadas', () => {
+    const rps = [criarRpDeTeste({ rp: '1' })];
+    expect(ultimoMesComDatas(rps, [])).toBeNull();
   });
 });
 

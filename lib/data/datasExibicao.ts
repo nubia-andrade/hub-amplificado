@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import * as XLSX from 'xlsx';
 
+// Usa fs/path (Node) e a biblioteca xlsx — nunca importar este módulo a partir de um componente 'use client'.
+
 interface LinhaBruta {
   'Data Exib': string;
   Sigla: string;

@@ -21,10 +21,19 @@ export function agruparDatasPorDia(rps: RpComStatus[], datasExibicao: DataExibic
     const entradas = mapa[registro.data] ?? (mapa[registro.data] = []);
     const existente = entradas.find((entrada) => entrada.sigla === registro.sigla);
     if (existente) {
-      existente.elegivel = existente.elegivel || elegivel;
+      existente.elegivel = existente.elegivel && elegivel;
     } else {
       entradas.push({ sigla: registro.sigla, elegivel });
     }
+  }
+
+  for (const dia of Object.keys(mapa)) {
+    mapa[dia].sort((a, b) => {
+      if (a.elegivel !== b.elegivel) {
+        return a.elegivel ? -1 : 1;
+      }
+      return a.sigla.localeCompare(b.sigla, 'pt-BR');
+    });
   }
 
   return mapa;
@@ -45,6 +54,19 @@ export function primeiroMesComDatas(rps: RpComStatus[], datasExibicao: DataExibi
 
   const primeira = [...datas].sort()[0];
   const [ano, mes] = primeira.split('-');
+  return { ano: Number(ano), mes: Number(mes) };
+}
+
+export function ultimoMesComDatas(rps: RpComStatus[], datasExibicao: DataExibicao[]): MesAno | null {
+  const rpIds = new Set(rps.map((rp) => rp.rp));
+  const datas = datasExibicao.filter((registro) => rpIds.has(registro.rp)).map((registro) => registro.data);
+
+  if (datas.length === 0) {
+    return null;
+  }
+
+  const ultima = [...datas].sort().at(-1)!;
+  const [ano, mes] = ultima.split('-');
   return { ano: Number(ano), mes: Number(mes) };
 }
 

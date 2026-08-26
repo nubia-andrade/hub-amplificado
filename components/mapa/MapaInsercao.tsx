@@ -3,7 +3,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
 import type { DataExibicao } from '@/lib/data/datasExibicao';
-import { agruparDatasPorDia, construirGradeDoMes, primeiroMesComDatas, type MesAno } from '@/lib/mapa/calendario';
+import {
+  agruparDatasPorDia,
+  construirGradeDoMes,
+  primeiroMesComDatas,
+  ultimoMesComDatas,
+  type MesAno,
+} from '@/lib/mapa/calendario';
+
+function paraIndice(mesAno: MesAno): number {
+  return mesAno.ano * 12 + mesAno.mes;
+}
 
 interface MapaInsercaoProps {
   rps: RpComStatus[];
@@ -41,6 +51,15 @@ export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
   const rpsDoCliente = useMemo(
     () => rps.filter((rp) => rp.anunciante === clienteSelecionado),
     [rps, clienteSelecionado]
+  );
+
+  const primeiroMes = useMemo(
+    () => primeiroMesComDatas(rpsDoCliente, datasExibicao),
+    [rpsDoCliente, datasExibicao]
+  );
+  const ultimoMes = useMemo(
+    () => ultimoMesComDatas(rpsDoCliente, datasExibicao),
+    [rpsDoCliente, datasExibicao]
   );
 
   useEffect(() => {
@@ -124,7 +143,15 @@ export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
             <button
               type="button"
               onClick={irParaMesAnterior}
-              style={{ border: '1px solid var(--cor-borda-forte)', background: 'transparent', borderRadius: 'var(--raio-input)', padding: '4px 10px', cursor: 'pointer' }}
+              disabled={!primeiroMes || paraIndice(anoMes) <= paraIndice(primeiroMes)}
+              style={{
+                border: '1px solid var(--cor-borda-forte)',
+                background: 'transparent',
+                borderRadius: 'var(--raio-input)',
+                padding: '4px 10px',
+                cursor: !primeiroMes || paraIndice(anoMes) <= paraIndice(primeiroMes) ? 'not-allowed' : 'pointer',
+                opacity: !primeiroMes || paraIndice(anoMes) <= paraIndice(primeiroMes) ? 0.4 : 1,
+              }}
             >
               ←
             </button>
@@ -134,7 +161,15 @@ export function MapaInsercao({ rps, datasExibicao }: MapaInsercaoProps) {
             <button
               type="button"
               onClick={irParaProximoMes}
-              style={{ border: '1px solid var(--cor-borda-forte)', background: 'transparent', borderRadius: 'var(--raio-input)', padding: '4px 10px', cursor: 'pointer' }}
+              disabled={!ultimoMes || paraIndice(anoMes) >= paraIndice(ultimoMes)}
+              style={{
+                border: '1px solid var(--cor-borda-forte)',
+                background: 'transparent',
+                borderRadius: 'var(--raio-input)',
+                padding: '4px 10px',
+                cursor: !ultimoMes || paraIndice(anoMes) >= paraIndice(ultimoMes) ? 'not-allowed' : 'pointer',
+                opacity: !ultimoMes || paraIndice(anoMes) >= paraIndice(ultimoMes) ? 0.4 : 1,
+              }}
             >
               →
             </button>
