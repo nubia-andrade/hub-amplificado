@@ -23,7 +23,12 @@ export async function executarGraphQL<T>(query: string, variables?: Record<strin
       'x-hasura-admin-secret': adminSecret,
     },
     body: JSON.stringify({ query, variables }),
+    signal: AbortSignal.timeout(5000),
   });
+
+  if (!resposta.ok) {
+    throw new Error(`Erro HTTP ${resposta.status} do Nhost.`);
+  }
 
   const corpo = (await resposta.json()) as RespostaGraphQL<T>;
 

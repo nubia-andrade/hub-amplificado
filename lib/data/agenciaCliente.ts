@@ -45,7 +45,10 @@ export async function obterAgenciaCliente(anunciante: string): Promise<AgenciaCl
     }
 
     return { possuiAgencia: true, nomeAgencia: cliente.agencia.nome };
-  } catch {
+  } catch (erro) {
+    console.warn(
+      `Falha ao consultar agência do cliente "${anunciante}" no Nhost — usando mock. ${erro instanceof Error ? erro.message : String(erro)}`
+    );
     return agenciaMockComo(anunciante);
   }
 }

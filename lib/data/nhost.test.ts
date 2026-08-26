@@ -15,6 +15,7 @@ describe('executarGraphQL', () => {
     process.env.NHOST_ADMIN_SECRET = 'segredo-de-teste';
 
     const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
       json: async () => ({ data: { ok: true } }),
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -43,6 +44,7 @@ describe('executarGraphQL', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
+        ok: true,
         json: async () => ({ errors: [{ message: 'campo inválido' }] }),
       })
     );
@@ -56,5 +58,22 @@ describe('executarGraphQL', () => {
     delete process.env.NHOST_ADMIN_SECRET;
 
     await expect(executarGraphQL('query { ok }')).rejects.toThrow(/não configuradas/);
+  });
+
+  it('lança erro quando a resposta HTTP não é ok', async () => {
+    process.env.NHOST_SUBDOMAIN = 'abc123';
+    process.env.NHOST_REGION = 'sa-east-1';
+    process.env.NHOST_ADMIN_SECRET = 'segredo-de-teste';
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 502,
+        json: async () => ({}),
+      })
+    );
+
+    await expect(executarGraphQL('query { ok }')).rejects.toThrow('Erro HTTP 502 do Nhost.');
   });
 });

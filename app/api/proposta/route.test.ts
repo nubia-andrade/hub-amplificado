@@ -1,8 +1,14 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@/lib/auth/session', () => ({
   lerSessao: vi.fn(),
 }));
+
+beforeEach(() => {
+  delete process.env.NHOST_SUBDOMAIN;
+  delete process.env.NHOST_REGION;
+  delete process.env.NHOST_ADMIN_SECRET;
+});
 
 import { lerSessao } from '@/lib/auth/session';
 import { POST } from './route';

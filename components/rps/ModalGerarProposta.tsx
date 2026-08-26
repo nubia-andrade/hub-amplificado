@@ -1,9 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
 import { formatarMoeda } from '@/lib/rps/formato';
-import { obterAgenciaMock } from '@/lib/data/agenciaMock';
 
 interface ModalGerarPropostaProps {
   rpsSelecionadas: RpComStatus[];
@@ -20,10 +19,24 @@ const ALCADA_MAXIMA = 20;
 export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarPropostaProps) {
   const cliente = rpsSelecionadas[0]?.anunciante ?? '';
   const [percentualDesconto, setPercentualDesconto] = useState(0);
-  const [agencia, setAgencia] = useState<EstadoAgencia>(() => {
-    const nomeMock = obterAgenciaMock(cliente);
-    return { possui: nomeMock !== null, nome: nomeMock ?? '' };
-  });
+  const [agencia, setAgencia] = useState<EstadoAgencia>({ possui: false, nome: '' });
+
+  useEffect(() => {
+    if (!cliente) return;
+    let cancelado = false;
+
+    fetch(`/api/agencia?cliente=${encodeURIComponent(cliente)}`)
+      .then((resposta) => (resposta.ok ? resposta.json() : null))
+      .then((dados: { possuiAgencia: boolean; nomeAgencia: string | null } | null) => {
+        if (cancelado || !dados) return;
+        setAgencia({ possui: dados.possuiAgencia, nome: dados.nomeAgencia ?? '' });
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelado = true;
+    };
+  }, [cliente]);
   const [gerando, setGerando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
