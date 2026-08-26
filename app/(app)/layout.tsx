@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { lerSessao } from '@/lib/auth/session';
+import { AbasPrincipais } from '@/components/nav/AbasPrincipais';
 import { sair } from './actions';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -27,19 +28,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <strong style={{ fontSize: 13, fontWeight: 700, color: '#101820' }}>
             Hub Amplificado
           </strong>
-          <span
-            style={{
-              background: 'var(--gradiente-marca)',
-              color: '#fff',
-              padding: '6px 14px',
-              borderRadius: 'var(--raio-botao)',
-              fontSize: 12,
-              fontWeight: 700,
-              boxShadow: 'var(--sombra-botao)',
-            }}
-          >
-            Minhas RPs
-          </span>
+          <AbasPrincipais />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ textAlign: 'right' }}>

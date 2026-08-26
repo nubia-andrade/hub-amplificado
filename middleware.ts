@@ -14,5 +14,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/rps/:path*'],
+  matcher: ['/rps/:path*', '/mapa/:path*'],
 };
