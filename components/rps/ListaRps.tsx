@@ -158,16 +158,19 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
       >
         <div
           style={{
+            position: 'sticky',
+            top: 53,
+            height: 'calc(100vh - 85px)',
+            overflowY: 'auto',
             border: '1px solid var(--cor-borda)',
             borderRadius: 'var(--raio-card)',
             background: 'var(--cor-superficie)',
-            overflow: 'hidden',
           }}
         >
           <div
             style={{
               position: 'sticky',
-              top: 53,
+              top: 0,
               display: 'grid',
               gridTemplateColumns: '28px 72px minmax(90px,1fr) 44px 70px 96px 104px',
               gap: 8,
