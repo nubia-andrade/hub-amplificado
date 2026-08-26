@@ -10,6 +10,13 @@ describe('buscarExecutivoPorEmail', () => {
   it('retorna undefined para e-mail fora da carteira', () => {
     expect(buscarExecutivoPorEmail('ninguem@empresa.com.br')).toBeUndefined();
   });
+
+  it('inclui o executivoRaw usado para filtrar RPs, e null para o papel gerente', () => {
+    expect(buscarExecutivoPorEmail('milena.dabul@empresa.com.br')?.executivoRaw).toBe(
+      'Milena Dabul Stork(N)',
+    );
+    expect(buscarExecutivoPorEmail('gerente@empresa.com.br')?.executivoRaw).toBeNull();
+  });
 });
 
 describe('autenticar', () => {

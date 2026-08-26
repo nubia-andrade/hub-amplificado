@@ -6,6 +6,7 @@ export interface Sessao {
   nome: string;
   email: string;
   papel: Papel;
+  executivoRaw: string | null;
 }
 
 export function ehSessao(valor: unknown): valor is Sessao {
@@ -14,12 +15,18 @@ export function ehSessao(valor: unknown): valor is Sessao {
   return (
     typeof candidato.nome === 'string' &&
     typeof candidato.email === 'string' &&
-    (candidato.papel === 'executivo' || candidato.papel === 'gerente')
+    (candidato.papel === 'executivo' || candidato.papel === 'gerente') &&
+    (candidato.executivoRaw === null || typeof candidato.executivoRaw === 'string')
   );
 }
 
 export async function criarSessao(executivo: ExecutivoCarteira): Promise<void> {
-  const sessao: Sessao = { nome: executivo.nome, email: executivo.email, papel: executivo.papel };
+  const sessao: Sessao = {
+    nome: executivo.nome,
+    email: executivo.email,
+    papel: executivo.papel,
+    executivoRaw: executivo.executivoRaw,
+  };
   (await cookies()).set(NOME_COOKIE_SESSAO, JSON.stringify(sessao), {
     httpOnly: true,
     sameSite: 'lax',
