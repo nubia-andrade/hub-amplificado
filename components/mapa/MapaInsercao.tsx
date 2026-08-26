@@ -38,7 +38,7 @@ const NOMES_MES = [
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
 const COLUNAS_SIGLAS = 5;
-const LINHAS_SIGLAS = 4;
+const LINHAS_SIGLAS = 5;
 const MAX_SIGLAS_VISIVEIS = COLUNAS_SIGLAS * LINHAS_SIGLAS;
 
 const CORES_PRACA: Record<string, string> = {
