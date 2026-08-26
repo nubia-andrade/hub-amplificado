@@ -64,10 +64,23 @@ export function ehSelecionavel(rp: RpComStatus): boolean {
   return rp.elegivel && rp.status === 'Disponível';
 }
 
+export function anuncianteDaSelecao(rps: RpComStatus[], selecionadas: string[]): string | null {
+  const primeiraSelecionada = rps.find((rp) => selecionadas.includes(rp.rp));
+  return primeiraSelecionada?.anunciante ?? null;
+}
+
+export function ehSelecionavelParaProposta(rp: RpComStatus, anuncianteSelecao: string | null): boolean {
+  return ehSelecionavel(rp) && (anuncianteSelecao === null || rp.anunciante === anuncianteSelecao);
+}
+
 export type EstadoSelecaoTodas = 'nenhuma' | 'parcial' | 'todas';
 
-export function estadoSelecaoTodas(rps: RpComStatus[], selecionadas: string[]): EstadoSelecaoTodas {
-  const selecionaveis = rps.filter(ehSelecionavel);
+export function estadoSelecaoTodas(
+  rps: RpComStatus[],
+  selecionadas: string[],
+  anuncianteSelecao: string | null = null
+): EstadoSelecaoTodas {
+  const selecionaveis = rps.filter((rp) => ehSelecionavelParaProposta(rp, anuncianteSelecao));
   if (selecionaveis.length === 0) {
     return 'nenhuma';
   }
@@ -84,7 +97,6 @@ export function estadoSelecaoTodas(rps: RpComStatus[], selecionadas: string[]): 
 export interface ResumoSelecao {
   quantidade: number;
   totalTabela: number;
-  anunciantesDistintos: number;
 }
 
 export function resumoSelecao(rps: RpComStatus[], selecionadas: string[]): ResumoSelecao {
@@ -92,6 +104,5 @@ export function resumoSelecao(rps: RpComStatus[], selecionadas: string[]): Resum
   return {
     quantidade: selecionadasRps.length,
     totalTabela: selecionadasRps.reduce((soma, rp) => soma + rp.valorTabela, 0),
-    anunciantesDistintos: new Set(selecionadasRps.map((rp) => rp.anunciante)).size,
   };
 }

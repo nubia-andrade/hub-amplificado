@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import type { RpComStatus } from './rpComStatus';
 import {
+  anuncianteDaSelecao,
   estadoSelecaoTodas,
   ehSelecionavel,
+  ehSelecionavelParaProposta,
   filtrarRps,
   minhasRps,
   resumoSelecao,
@@ -134,26 +136,58 @@ describe('estadoSelecaoTodas', () => {
     ];
     expect(estadoSelecaoTodas(rpsSemSelecionaveis, [])).toBe('nenhuma');
   });
+
+  it('não conta como "todas" uma RP selecionável de outro anunciante quando há trava de cliente', () => {
+    const rpsDoisAnunciantes = [
+      criarRpDeTeste({ rp: '1', anunciante: 'SAERJ', elegivel: true, status: 'Disponível' }),
+      criarRpDeTeste({ rp: '2', anunciante: 'ELETROBRAS', elegivel: true, status: 'Disponível' }),
+    ];
+    expect(estadoSelecaoTodas(rpsDoisAnunciantes, ['1'], 'SAERJ')).toBe('todas');
+  });
+});
+
+describe('anuncianteDaSelecao', () => {
+  const rps = [
+    criarRpDeTeste({ rp: '1', anunciante: 'SAERJ' }),
+    criarRpDeTeste({ rp: '2', anunciante: 'ELETROBRAS' }),
+  ];
+
+  it('retorna o anunciante da primeira RP selecionada', () => {
+    expect(anuncianteDaSelecao(rps, ['2'])).toBe('ELETROBRAS');
+  });
+
+  it('retorna null quando nada está selecionado', () => {
+    expect(anuncianteDaSelecao(rps, [])).toBeNull();
+  });
+});
+
+describe('ehSelecionavelParaProposta', () => {
+  it('é selecionável quando elegível, Disponível, e sem trava de cliente', () => {
+    expect(ehSelecionavelParaProposta(criarRpDeTeste({ anunciante: 'SAERJ' }), null)).toBe(true);
+  });
+
+  it('é selecionável quando o anunciante bate com a trava de cliente', () => {
+    expect(ehSelecionavelParaProposta(criarRpDeTeste({ anunciante: 'SAERJ' }), 'SAERJ')).toBe(true);
+  });
+
+  it('não é selecionável quando o anunciante diverge da trava de cliente', () => {
+    expect(ehSelecionavelParaProposta(criarRpDeTeste({ anunciante: 'ELETROBRAS' }), 'SAERJ')).toBe(false);
+  });
+
+  it('não é selecionável quando não elegível, mesmo sem trava de cliente', () => {
+    expect(ehSelecionavelParaProposta(criarRpDeTeste({ elegivel: false }), null)).toBe(false);
+  });
 });
 
 describe('resumoSelecao', () => {
   const rps = [
     criarRpDeTeste({ rp: '1', anunciante: 'SAERJ', valorTabela: 100 }),
-    criarRpDeTeste({ rp: '2', anunciante: 'ELETROBRAS', valorTabela: 250 }),
+    criarRpDeTeste({ rp: '2', anunciante: 'SAERJ', valorTabela: 250 }),
   ];
 
-  it('soma o valor de tabela e conta anunciantes distintos das RPs selecionadas', () => {
+  it('soma o valor de tabela e conta a quantidade das RPs selecionadas', () => {
     const resumo = resumoSelecao(rps, ['1', '2']);
     expect(resumo.quantidade).toBe(2);
     expect(resumo.totalTabela).toBe(350);
-    expect(resumo.anunciantesDistintos).toBe(2);
-  });
-
-  it('conta um único anunciante quando as RPs selecionadas são do mesmo cliente', () => {
-    const mesmoAnunciante = [
-      criarRpDeTeste({ rp: '1', anunciante: 'SAERJ', valorTabela: 100 }),
-      criarRpDeTeste({ rp: '2', anunciante: 'SAERJ', valorTabela: 250 }),
-    ];
-    expect(resumoSelecao(mesmoAnunciante, ['1', '2']).anunciantesDistintos).toBe(1);
   });
 });

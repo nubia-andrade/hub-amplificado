@@ -19,7 +19,7 @@ describe('POST /api/proposta', () => {
   it('retorna 401 sem sessão', async () => {
     vi.mocked(lerSessao).mockResolvedValue(null);
 
-    const resposta = await POST(requisicao({ rpIds: ['1'], percentualDesconto: 0, agencias: {} }));
+    const resposta = await POST(requisicao({ rpIds: ['1'], percentualDesconto: 0, possuiAgencia: false, nomeAgencia: '' }));
 
     expect(resposta.status).toBe(401);
   });
@@ -32,7 +32,7 @@ describe('POST /api/proposta', () => {
       executivoRaw: 'Karina Martinelli',
     });
 
-    const resposta = await POST(requisicao({ rpIds: ['1'], percentualDesconto: 25, agencias: {} }));
+    const resposta = await POST(requisicao({ rpIds: ['1'], percentualDesconto: 25, possuiAgencia: false, nomeAgencia: '' }));
 
     expect(resposta.status).toBe(400);
   });
@@ -45,7 +45,7 @@ describe('POST /api/proposta', () => {
       executivoRaw: 'Karina Martinelli',
     });
 
-    const resposta = await POST(requisicao({ rpIds: [], percentualDesconto: 10, agencias: {} }));
+    const resposta = await POST(requisicao({ rpIds: [], percentualDesconto: 10, possuiAgencia: false, nomeAgencia: '' }));
 
     expect(resposta.status).toBe(400);
   });
@@ -58,7 +58,60 @@ describe('POST /api/proposta', () => {
       executivoRaw: 'Karina Martinelli',
     });
 
-    const resposta = await POST(requisicao({ rpIds: ['rp-inexistente-999'], percentualDesconto: 10, agencias: {} }));
+    const resposta = await POST(requisicao({ rpIds: ['rp-inexistente-999'], percentualDesconto: 10, possuiAgencia: false, nomeAgencia: '' }));
+
+    expect(resposta.status).toBe(400);
+  });
+
+  it('retorna 400 quando as RPs selecionadas são de clientes diferentes', async () => {
+    vi.mocked(lerSessao).mockResolvedValue({
+      nome: 'Gerência',
+      email: 'gerencia@teste.com',
+      papel: 'gerente',
+      executivoRaw: null,
+    });
+
+    const { criarRepositorioMock } = await import('@/lib/data/repositorioRps');
+    const { listarRpsComElegibilidade } = await import('@/lib/regras/motor');
+    const { paraRpComStatus } = await import('@/lib/rps/rpComStatus');
+    const { ehSelecionavel } = await import('@/lib/rps/regrasLista');
+
+    const rps = listarRpsComElegibilidade(criarRepositorioMock(), new Date(), 2).map(paraRpComStatus);
+    const selecionaveis = rps.filter(ehSelecionavel);
+    const rpA = selecionaveis[0];
+    const rpB = selecionaveis.find((rp) => rp.anunciante !== rpA.anunciante);
+    expect(rpA).toBeDefined();
+    expect(rpB).toBeDefined();
+
+    const resposta = await POST(
+      requisicao({ rpIds: [rpA.rp, rpB!.rp], percentualDesconto: 0, possuiAgencia: false, nomeAgencia: '' })
+    );
+
+    expect(resposta.status).toBe(400);
+  });
+
+  it('retorna 400 quando possuiAgencia é true mas o nome está vazio e não há agência mockada', async () => {
+    vi.mocked(lerSessao).mockResolvedValue({
+      nome: 'Gerência',
+      email: 'gerencia@teste.com',
+      papel: 'gerente',
+      executivoRaw: null,
+    });
+
+    const { criarRepositorioMock } = await import('@/lib/data/repositorioRps');
+    const { listarRpsComElegibilidade } = await import('@/lib/regras/motor');
+    const { paraRpComStatus } = await import('@/lib/rps/rpComStatus');
+    const { ehSelecionavel } = await import('@/lib/rps/regrasLista');
+    const { obterAgenciaMock } = await import('@/lib/data/agenciaMock');
+
+    const rps = listarRpsComElegibilidade(criarRepositorioMock(), new Date(), 2).map(paraRpComStatus);
+    const selecionaveis = rps.filter(ehSelecionavel);
+    const rpSemAgenciaMock = selecionaveis.find((rp) => obterAgenciaMock(rp.anunciante) === null);
+    expect(rpSemAgenciaMock).toBeDefined();
+
+    const resposta = await POST(
+      requisicao({ rpIds: [rpSemAgenciaMock!.rp], percentualDesconto: 0, possuiAgencia: true, nomeAgencia: '' })
+    );
 
     expect(resposta.status).toBe(400);
   });

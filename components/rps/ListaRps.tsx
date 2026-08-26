@@ -5,7 +5,9 @@ import type { Sessao } from '@/lib/auth/session';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
 import { formatarMoeda, mesDaRp } from '@/lib/rps/formato';
 import {
+  anuncianteDaSelecao,
   ehSelecionavel,
+  ehSelecionavelParaProposta,
   estadoSelecaoTodas,
   filtrarRps,
   resumoSelecao,
@@ -41,7 +43,8 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
     [rps]
   );
   const filtradas = useMemo(() => filtrarRps(rps, filtros), [rps, filtros]);
-  const estadoTodas = estadoSelecaoTodas(filtradas, selecionadas);
+  const anuncianteSelecao = useMemo(() => anuncianteDaSelecao(rps, selecionadas), [rps, selecionadas]);
+  const estadoTodas = estadoSelecaoTodas(filtradas, selecionadas, anuncianteSelecao);
   const resumo = resumoSelecao(rps, selecionadas);
   const filtradasExibidas = filtradas.slice(0, 120);
 
@@ -56,7 +59,9 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
   }
 
   function alternarTodas() {
-    const selecionaveisFiltradas = filtradas.filter(ehSelecionavel).map((rp) => rp.rp);
+    const selecionaveisFiltradas = filtradas
+      .filter((rp) => ehSelecionavelParaProposta(rp, anuncianteSelecao))
+      .map((rp) => rp.rp);
     if (estadoTodas === 'todas') {
       setSelecionadas((atual) => atual.filter((id) => !selecionaveisFiltradas.includes(id)));
     } else {
@@ -190,9 +195,12 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
           </div>
 
           {filtradasExibidas.map((rp) => {
-            const selecionavel = ehSelecionavel(rp);
+            const selecionavel = ehSelecionavelParaProposta(rp, anuncianteSelecao);
             const aberta = detalheId === rp.rp;
             const marcada = selecionadas.includes(rp.rp);
+            const motivoIndisponivel = !ehSelecionavel(rp)
+              ? 'Só RPs elegíveis e com status Disponível podem ser selecionadas.'
+              : 'Só é possível selecionar RPs do mesmo cliente numa proposta.';
 
             return (
               <div
@@ -214,7 +222,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                   type="checkbox"
                   disabled={!selecionavel}
                   checked={marcada}
-                  title={selecionavel ? undefined : 'Só RPs elegíveis e com status Disponível podem ser selecionadas.'}
+                  title={selecionavel ? undefined : motivoIndisponivel}
                   onClick={(evento) => evento.stopPropagation()}
                   onChange={() => alternarSelecao(rp.rp)}
                 />
@@ -282,7 +290,6 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
         >
           <span>
             {resumo.quantidade} RPs Disponíveis · {formatarMoeda(resumo.totalTabela)}
-            {resumo.anunciantesDistintos > 1 ? ` · proposta única com ${resumo.anunciantesDistintos} anunciantes` : ''}
           </span>
           <div style={{ display: 'flex', gap: 8 }}>
             <button

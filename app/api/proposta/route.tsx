@@ -16,7 +16,8 @@ const ALCADA_MAXIMA = 20;
 interface CorpoRequisicao {
   rpIds: string[];
   percentualDesconto: number;
-  agencias: Record<string, { possui: boolean; nome: string }>;
+  possuiAgencia: boolean;
+  nomeAgencia: string;
 }
 
 function erro(mensagem: string, status: number): Response {
@@ -63,24 +64,27 @@ export async function POST(request: Request): Promise<Response> {
     return erro('Uma ou mais RPs selecionadas não estão disponíveis para você.', 400);
   }
 
+  const clientesDistintos = new Set(rpsEscolhidas.map((rp) => rp!.anunciante));
+  if (clientesDistintos.size > 1) {
+    return erro('Todas as RPs da proposta devem ser do mesmo cliente.', 400);
+  }
+
+  const cliente = rpsEscolhidas[0]!.anunciante;
+  const agenciaMock = obterAgenciaMock(cliente);
+  const possuiAgencia = typeof corpo.possuiAgencia === 'boolean' ? corpo.possuiAgencia : Boolean(agenciaMock);
+  const nomeAgencia = possuiAgencia ? corpo.nomeAgencia?.trim() || agenciaMock : null;
+
+  if (possuiAgencia && !nomeAgencia) {
+    return erro('Informe o nome da agência.', 400);
+  }
+
   const propostaCaPorChave = obterPropostaCaPorChave();
   const dataGeracao = new Intl.DateTimeFormat('pt-BR').format(new Date());
 
-  const paginas: PaginaProposta[] = [];
-  for (const rp of rpsEscolhidas) {
-    const configuracaoAgencia = corpo.agencias?.[rp!.rp];
-    const agenciaMock = obterAgenciaMock(rp!.rp);
-    const possuiAgencia =
-      configuracaoAgencia === undefined ? Boolean(agenciaMock) : configuracaoAgencia.possui === true;
-    const nomeAgencia = possuiAgencia ? (configuracaoAgencia?.nome || agenciaMock) : null;
-
-    if (possuiAgencia && !nomeAgencia) {
-      return erro(`Informe o nome da agência para a RP ${rp!.rp}.`, 400);
-    }
-
+  const paginas: PaginaProposta[] = rpsEscolhidas.map((rp) => {
     const { linhas, total } = montarLinhasProposta(rp!, corpo.percentualDesconto, possuiAgencia, propostaCaPorChave);
 
-    paginas.push({
+    return {
       rp: rp!.rp,
       cliente: rp!.anunciante,
       executivo: rp!.executivo,
@@ -88,8 +92,8 @@ export async function POST(request: Request): Promise<Response> {
       mesAno: mesDaRp(rp!),
       linhas,
       total,
-    });
-  }
+    };
+  });
 
   const buffer = await renderToBuffer(<PropostaDocumento paginas={paginas} dataGeracao={dataGeracao} />);
 

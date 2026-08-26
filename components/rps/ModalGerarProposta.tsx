@@ -18,14 +18,11 @@ interface EstadoAgencia {
 const ALCADA_MAXIMA = 20;
 
 export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarPropostaProps) {
+  const cliente = rpsSelecionadas[0]?.anunciante ?? '';
   const [percentualDesconto, setPercentualDesconto] = useState(0);
-  const [agencias, setAgencias] = useState<Record<string, EstadoAgencia>>(() => {
-    const inicial: Record<string, EstadoAgencia> = {};
-    for (const rp of rpsSelecionadas) {
-      const nomeMock = obterAgenciaMock(rp.rp);
-      inicial[rp.rp] = { possui: nomeMock !== null, nome: nomeMock ?? '' };
-    }
-    return inicial;
+  const [agencia, setAgencia] = useState<EstadoAgencia>(() => {
+    const nomeMock = obterAgenciaMock(cliente);
+    return { possui: nomeMock !== null, nome: nomeMock ?? '' };
   });
   const [gerando, setGerando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -36,10 +33,6 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
     () => rpsSelecionadas.reduce((soma, rp) => soma + rp.valorTabela, 0),
     [rpsSelecionadas]
   );
-
-  function atualizarAgencia(rpId: string, campo: keyof EstadoAgencia, valor: string | boolean) {
-    setAgencias((atual) => ({ ...atual, [rpId]: { ...atual[rpId], [campo]: valor } }));
-  }
 
   async function gerarProposta() {
     if (descontoInvalido) return;
@@ -53,7 +46,8 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
         body: JSON.stringify({
           rpIds: rpsSelecionadas.map((rp) => rp.rp),
           percentualDesconto,
-          agencias,
+          possuiAgencia: agencia.possui,
+          nomeAgencia: agencia.nome,
         }),
       });
 
@@ -140,38 +134,35 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
           )}
         </div>
 
-        <div style={{ marginTop: 16 }}>
-          {rpsSelecionadas.map((rp) => (
-            <div key={rp.rp} style={{ padding: '10px 0', borderTop: '1px solid var(--cor-borda-sutil)' }}>
-              <p style={{ fontSize: 12.5, fontWeight: 600, margin: 0 }}>
-                RP {rp.rp} · {rp.anunciante}
-              </p>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6, fontSize: 12 }}>
-                <input
-                  type="checkbox"
-                  checked={agencias[rp.rp]?.possui ?? false}
-                  onChange={(evento) => atualizarAgencia(rp.rp, 'possui', evento.target.checked)}
-                />
-                Cliente possui agência (desconto adicional de 20%)
-              </label>
-              {agencias[rp.rp]?.possui && (
-                <input
-                  value={agencias[rp.rp]?.nome ?? ''}
-                  onChange={(evento) => atualizarAgencia(rp.rp, 'nome', evento.target.value)}
-                  placeholder="Nome da agência"
-                  style={{
-                    display: 'block',
-                    marginTop: 6,
-                    padding: '6px 8px',
-                    border: '1px solid var(--cor-borda-input)',
-                    borderRadius: 'var(--raio-input)',
-                    fontSize: 12.5,
-                    width: '100%',
-                  }}
-                />
-              )}
-            </div>
-          ))}
+        <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--cor-borda-sutil)' }}>
+          <p style={{ fontSize: 12.5, fontWeight: 600, margin: 0 }}>Cliente: {cliente}</p>
+          <p style={{ fontSize: 11.5, color: 'var(--cor-tinta-secundaria)', margin: '4px 0 0' }}>
+            {rpsSelecionadas.map((rp) => rp.rp).join(' · ')}
+          </p>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 10, fontSize: 12 }}>
+            <input
+              type="checkbox"
+              checked={agencia.possui}
+              onChange={(evento) => setAgencia((atual) => ({ ...atual, possui: evento.target.checked }))}
+            />
+            Cliente possui agência (desconto adicional de 20%)
+          </label>
+          {agencia.possui && (
+            <input
+              value={agencia.nome}
+              onChange={(evento) => setAgencia((atual) => ({ ...atual, nome: evento.target.value }))}
+              placeholder="Nome da agência"
+              style={{
+                display: 'block',
+                marginTop: 6,
+                padding: '6px 8px',
+                border: '1px solid var(--cor-borda-input)',
+                borderRadius: 'var(--raio-input)',
+                fontSize: 12.5,
+                width: '100%',
+              }}
+            />
+          )}
         </div>
 
         {erro && (
