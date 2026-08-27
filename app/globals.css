@@ -16,9 +16,9 @@
   --cor-desabilitado-fundo: #eceef1;
   --cor-desabilitado-texto: #9aa0a8;
 
-  --cor-marca: #14161a;
-  --cor-marca-hover: #000000;
-  --gradiente-marca: linear-gradient(90deg, #ffa60c 0%, #f50234 97%);
+  --cor-marca: #f50234;
+  --cor-marca-hover: #ff2a55;
+  --gradiente-marca: linear-gradient(90deg, #f50234 0%, #ff3b00 28%, #ff7a00 58%, #ffa00a 80%, #ffb612 100%);
 
   --cor-acento: #14161a;
   --cor-acento-hover: #000000;
@@ -52,6 +52,56 @@
   --cor-praca-rj: #ff5e3a;
   --cor-praca-net: #2d6bff;
   --cor-praca-sp1: #7a2ff2;
+
+  /* Redesign "Minhas RPs" (design_handoff_hub_amplificado/README.md) — tokens
+     próprios (prefixo -rps-) para não alterar Mapa de Inserção, o modal de
+     proposta ou o login, que usam os tokens genéricos acima. */
+  --cor-rps-pagina: #f3f4f6;
+  --cor-rps-superficie-suave: #f8f9fa;
+  --cor-rps-cabecalho-tabela: #f4f5f7;
+  --cor-rps-hover-linha: #f4f6f8;
+  --cor-rps-borda: #e2e5e9;
+  --cor-rps-borda-interna: #e8eaee;
+  --cor-rps-borda-sutil: #eef0f3;
+  --cor-rps-borda-tracejada: #ccd2da;
+
+  --cor-rps-tinta-principal: #101820;
+  --cor-rps-tinta-forte: #333a44;
+  --cor-rps-tinta-corpo: #5b636e;
+  --cor-rps-tinta-secundaria: #77808c;
+  --cor-rps-tinta-terciaria: #aab1bb;
+  --cor-rps-tinta-desabilitada: #8b93a0;
+  --cor-rps-tinta-fraca: #c3c9d1;
+
+  --cor-rps-disponivel-base: #0f8a5f;
+  --cor-rps-disponivel-texto: #0b6b4a;
+  --cor-rps-disponivel-fundo: #e6f6ef;
+  --cor-rps-disponivel-borda: #bfe6d5;
+  --cor-rps-disponivel-linha-fundo: #f2faf6;
+
+  --cor-rps-nao-elegivel-texto: #77808c;
+  --cor-rps-nao-elegivel-fundo: #f4f5f7;
+  --cor-rps-nao-elegivel-borda: #e2e5e9;
+  --cor-rps-nao-elegivel-ponto: #c3c9d1;
+
+  --cor-rps-ink: #101820;
+  --cor-rps-ink-avatar: #242c37;
+  --cor-rps-ink-chip: #1e2732;
+  --cor-rps-ink-hover: #1b2430;
+  --cor-rps-ink-borda-botao: #2c3542;
+  --cor-rps-ink-tinta-1: #d6dbe1;
+  --cor-rps-ink-tinta-2: #e8ebee;
+  --cor-rps-ink-tinta-3: #9aa4b0;
+  --cor-rps-ink-tinta-4: #aeb6c0;
+  --cor-rps-marca-suave: #ff5b7d;
+
+  --raio-rps-input: 8px;
+  --raio-rps-botao: 8px;
+  --raio-rps-card: 12px;
+  --raio-rps-chip: 5px;
+  --raio-rps-nav: 7px;
+
+  --fonte-rps-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   --overlay-modal: rgba(20, 19, 24, 0.42);
 
@@ -118,4 +168,55 @@ button:active {
 :focus-visible {
   outline: 2px solid #f50234;
   outline-offset: -1px;
+}
+
+.aba-nav {
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+.aba-nav:not(.aba-nav-ativa):hover {
+  background: var(--cor-rps-ink-hover);
+  color: #ffffff;
+}
+
+.link-sair {
+  transition: color 0.12s ease;
+}
+.link-sair:hover {
+  color: #ffffff;
+}
+
+.linha-rp {
+  transition: background-color 0.12s ease;
+}
+.linha-rp:hover {
+  background: var(--cor-rps-hover-linha);
+}
+.linha-rp.linha-rp-selecionada:hover {
+  background: var(--cor-rps-disponivel-linha-fundo);
+}
+
+.botao-rps-secundario {
+  transition: background-color 0.12s ease;
+}
+.botao-rps-secundario:hover {
+  background: var(--cor-rps-ink-hover);
+}
+
+.botao-rps-primario {
+  transition: background-color 0.12s ease;
+}
+.botao-rps-primario:hover:not(:disabled) {
+  background: var(--cor-marca-hover);
+}
+
+.item-linha-proposta {
+  transition: background-color 0.12s ease;
+}
+.item-linha-proposta:hover {
+  background: var(--cor-rps-hover-linha);
+}
+
+.caixa-selecao:focus-visible {
+  outline: 2px solid var(--cor-rps-disponivel-base);
+  outline-offset: 2px;
 }
