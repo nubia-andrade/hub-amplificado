@@ -1,12 +1,10 @@
+import { formatarMoeda } from '@/lib/rps/formato';
+
 interface FaixaKpisProps {
   carteiraTotal: number;
   disponiveisContagem: number;
   tabelaDisponivel: number;
   selecionadoTotal: number;
-}
-
-function formatarMoedaKpi(valor: number): string {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
 }
 
 function CardKpi({
@@ -21,7 +19,7 @@ function CardKpi({
   corValor?: string;
 }) {
   return (
-    <div style={{ background: '#ffffff', padding: '15px 18px 14px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+    <div style={{ background: 'var(--cor-superficie)', padding: '15px 18px 14px', display: 'flex', flexDirection: 'column', gap: 5 }}>
       <p
         style={{
           margin: 0,
@@ -75,8 +73,8 @@ export function FaixaKpis({ carteiraTotal, disponiveisContagem, tabelaDisponivel
         sufixo={`de ${carteiraTotal}`}
         corValor="var(--cor-rps-disponivel-base)"
       />
-      <CardKpi rotulo="Tabela disponível" valor={formatarMoedaKpi(tabelaDisponivel)} />
-      <CardKpi rotulo="Selecionado" valor={formatarMoedaKpi(selecionadoTotal)} />
+      <CardKpi rotulo="Tabela disponível" valor={formatarMoeda(tabelaDisponivel)} />
+      <CardKpi rotulo="Selecionado" valor={formatarMoeda(selecionadoTotal)} />
     </div>
   );
 }
