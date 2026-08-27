@@ -52,3 +52,21 @@ export function mesDaRp(rp: RpComDatas): string {
   const rotuloFim = capitalizar(MESES_PT[Number(mesFim) - 1]);
   return `${rotuloInicio}–${rotuloFim}/${anoFim}`;
 }
+
+export function chaveMesDaRp(rp: RpComDatas): string {
+  const datas = rp.linhas.flatMap((linha) => [linha.de, linha.ate]).filter(Boolean);
+  if (datas.length === 0) {
+    return '9999-99';
+  }
+  const primeira = [...datas].sort()[0];
+  const [ano, mes] = primeira.split('-');
+  return `${ano}-${mes}`;
+}
+
+export function rotuloMes(chave: string): string {
+  if (chave === '9999-99') {
+    return 'Sem data';
+  }
+  const [ano, mes] = chave.split('-');
+  return `${capitalizar(MESES_PT[Number(mes) - 1])}/${ano}`;
+}
