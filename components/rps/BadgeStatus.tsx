@@ -6,31 +6,36 @@ interface BadgeStatusProps {
   motivos?: string[];
 }
 
-const CORES: Record<StatusComercial | 'Não elegível', { texto: string; fundo: string; borda: string }> = {
+const CORES: Record<StatusComercial | 'Não elegível', { texto: string; fundo: string; borda: string; ponto: string }> = {
   Disponível: {
-    texto: 'var(--cor-sucesso-texto)',
-    fundo: 'var(--cor-sucesso-fundo)',
-    borda: 'var(--cor-sucesso-borda)',
+    texto: 'var(--cor-rps-disponivel-texto)',
+    fundo: 'var(--cor-rps-disponivel-fundo)',
+    borda: 'var(--cor-rps-disponivel-borda)',
+    ponto: 'var(--cor-rps-disponivel-base)',
   },
   'Em negociação': {
     texto: 'var(--cor-neutro-texto)',
     fundo: 'var(--cor-neutro-fundo)',
     borda: 'var(--cor-neutro-borda)',
+    ponto: 'var(--cor-neutro-borda)',
   },
   'Fechada Ganha': {
-    texto: 'var(--cor-sucesso-texto)',
-    fundo: 'var(--cor-sucesso-fundo)',
-    borda: 'var(--cor-sucesso-borda)',
+    texto: 'var(--cor-rps-disponivel-texto)',
+    fundo: 'var(--cor-rps-disponivel-fundo)',
+    borda: 'var(--cor-rps-disponivel-borda)',
+    ponto: 'var(--cor-rps-disponivel-base)',
   },
   'Negócio Perdido': {
     texto: 'var(--cor-erro-texto)',
     fundo: 'var(--cor-erro-fundo)',
     borda: 'var(--cor-erro-borda)',
+    ponto: 'var(--cor-erro-borda)',
   },
   'Não elegível': {
-    texto: 'var(--cor-esgotado-texto)',
-    fundo: 'var(--cor-esgotado-fundo)',
-    borda: 'var(--cor-esgotado-borda)',
+    texto: 'var(--cor-rps-nao-elegivel-texto)',
+    fundo: 'var(--cor-rps-nao-elegivel-fundo)',
+    borda: 'var(--cor-rps-nao-elegivel-borda)',
+    ponto: 'var(--cor-rps-nao-elegivel-ponto)',
   },
 };
 
@@ -43,10 +48,12 @@ export function BadgeStatus({ status, elegivel, motivos }: BadgeStatusProps) {
     <span
       title={titulo}
       style={{
-        display: 'inline-block',
-        fontSize: 10,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+        fontSize: 11,
         fontWeight: 600,
-        padding: '3px 8px',
+        padding: '4px 10px 4px 8px',
         borderRadius: 'var(--raio-badge)',
         color: cor.texto,
         background: cor.fundo,
@@ -55,6 +62,7 @@ export function BadgeStatus({ status, elegivel, motivos }: BadgeStatusProps) {
         cursor: titulo ? 'help' : undefined,
       }}
     >
+      <span style={{ width: 5, height: 5, borderRadius: '50%', background: cor.ponto, flexShrink: 0 }} />
       {rotulo}
     </span>
   );
