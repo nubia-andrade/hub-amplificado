@@ -215,6 +215,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                     <CaixaSelecao
                       checked={estadoTodas === 'todas'}
                       indeterminado={estadoTodas === 'parcial'}
+                      rotulo="Selecionar todas as RPs disponíveis"
                       onChange={alternarTodas}
                     />
                     <span>RP</span>
@@ -298,6 +299,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
                               checked={marcada}
                               disabled={!selecionavel}
                               titulo={selecionavel ? undefined : motivoIndisponivel}
+                              rotulo={`Selecionar RP ${rp.rp} — ${rp.anunciante}`}
                               aoClicar={(evento) => evento.stopPropagation()}
                               onChange={() => alternarSelecao(rp.rp)}
                             />

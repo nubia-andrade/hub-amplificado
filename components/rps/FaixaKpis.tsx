@@ -66,11 +66,11 @@ export function FaixaKpis({ carteiraTotal, disponiveisContagem, tabelaDisponivel
         overflow: 'hidden',
       }}
     >
-      <CardKpi rotulo="Carteira" valor={String(carteiraTotal)} sufixo="RPs" />
+      <CardKpi rotulo="Carteira" valor={carteiraTotal.toLocaleString('pt-BR')} sufixo="RPs" />
       <CardKpi
         rotulo="Disponíveis"
-        valor={String(disponiveisContagem)}
-        sufixo={`de ${carteiraTotal}`}
+        valor={disponiveisContagem.toLocaleString('pt-BR')}
+        sufixo={`de ${carteiraTotal.toLocaleString('pt-BR')}`}
         corValor="var(--cor-rps-disponivel-base)"
       />
       <CardKpi rotulo="Tabela disponível" valor={formatarMoeda(tabelaDisponivel)} />

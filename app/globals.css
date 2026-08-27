@@ -198,7 +198,7 @@ button:active {
 .botao-rps-secundario {
   transition: background-color 0.12s ease;
 }
-.botao-rps-secundario:hover {
+.botao-rps-secundario:hover:not(:disabled) {
   background: var(--cor-rps-ink-hover) !important;
 }
 
@@ -216,7 +216,7 @@ button:active {
   background: var(--cor-rps-hover-linha);
 }
 
-.caixa-selecao:focus-visible {
+.caixa-selecao:focus-visible + span {
   outline: 2px solid var(--cor-rps-disponivel-base);
   outline-offset: 2px;
 }

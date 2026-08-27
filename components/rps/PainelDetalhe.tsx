@@ -136,7 +136,7 @@ export function PainelDetalhe({ rp }: PainelDetalheProps) {
             flex: 1.4,
             padding: 9,
             border: 'none',
-            background: rp.elegivel ? 'var(--gradiente-marca)' : 'var(--cor-desabilitado-fundo)',
+            background: rp.elegivel ? 'var(--cor-marca)' : 'var(--cor-desabilitado-fundo)',
             color: rp.elegivel ? 'var(--cor-superficie)' : 'var(--cor-desabilitado-texto)',
             borderRadius: 'var(--raio-botao)',
             fontSize: 12,

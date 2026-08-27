@@ -101,7 +101,7 @@ export default function LoginPage() {
             style={{
               width: '100%',
               padding: '11px',
-              background: 'var(--gradiente-marca)',
+              background: 'var(--cor-marca)',
               color: '#fff',
               fontWeight: 700,
               fontSize: 13,

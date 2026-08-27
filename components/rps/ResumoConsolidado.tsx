@@ -53,7 +53,7 @@ export function ResumoConsolidado({ rps }: ResumoConsolidadoProps) {
               {anunciante}
             </span>
           ))}
-          <span style={{ fontSize: 11.5, color: 'var(--cor-rps-ink-tinta-3)' }}>{totalDatas} datas de exibição</span>
+          <span style={{ fontSize: 11.5, color: 'var(--cor-rps-ink-tinta-3)' }}>{totalDatas.toLocaleString('pt-BR')} datas de exibição</span>
         </div>
       </div>
 
@@ -93,7 +93,7 @@ export function ResumoConsolidado({ rps }: ResumoConsolidadoProps) {
       <div style={{ maxHeight: 420, overflow: 'auto', padding: '6px 6px 10px' }}>
         {linhas.map(({ rp, linha }, indice) => (
           <div
-            key={indice}
+            key={`${rp}-${indice}`}
             className="item-linha-proposta"
             style={{
               display: 'grid',

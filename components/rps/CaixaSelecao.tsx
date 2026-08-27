@@ -7,11 +7,12 @@ interface CaixaSelecaoProps {
   indeterminado?: boolean;
   disabled?: boolean;
   titulo?: string;
+  rotulo: string;
   onChange: () => void;
   aoClicar?: (evento: React.MouseEvent) => void;
 }
 
-export function CaixaSelecao({ checked, indeterminado, disabled, titulo, onChange, aoClicar }: CaixaSelecaoProps) {
+export function CaixaSelecao({ checked, indeterminado, disabled, titulo, rotulo, onChange, aoClicar }: CaixaSelecaoProps) {
   const ref = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ export function CaixaSelecao({ checked, indeterminado, disabled, titulo, onChang
   const marcado = checked || indeterminado;
 
   return (
-    <span style={{ position: 'relative', width: 16, height: 16, display: 'inline-block', flexShrink: 0 }}>
+    <span style={{ position: 'relative', width: 16, height: 16, display: 'inline-block', flexShrink: 0 }} title={titulo}>
       <input
         ref={ref}
         type="checkbox"
@@ -31,7 +32,7 @@ export function CaixaSelecao({ checked, indeterminado, disabled, titulo, onChang
         checked={checked}
         disabled={disabled}
         aria-disabled={disabled}
-        title={titulo}
+        aria-label={rotulo}
         onClick={aoClicar}
         onChange={onChange}
         style={{

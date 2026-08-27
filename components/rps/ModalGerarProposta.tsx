@@ -203,7 +203,7 @@ export function ModalGerarProposta({ rpsSelecionadas, aoFechar }: ModalGerarProp
             disabled={descontoInvalido || gerando}
             style={{
               border: 'none',
-              background: 'var(--gradiente-marca)',
+              background: 'var(--cor-marca)',
               color: '#ffffff',
               borderRadius: 'var(--raio-botao)',
               padding: '8px 18px',
