@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Sessao } from '@/lib/auth/session';
 import type { RpComStatus } from '@/lib/rps/rpComStatus';
 import { formatarMoeda, mesDaRp } from '@/lib/rps/formato';
@@ -51,7 +51,6 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
   const [selecionadas, setSelecionadas] = useState<string[]>([]);
   const [detalheId, setDetalheId] = useState<string | null>(null);
   const [modalPropostaAberto, setModalPropostaAberto] = useState(false);
-  const checkboxCabecalhoRef = useRef<HTMLInputElement>(null);
 
   const pracas = useMemo(() => [...new Set(rps.map((rp) => rp.exib))].sort((a, b) => a.localeCompare(b, 'pt-BR')), [rps]);
   const executivos = useMemo(
@@ -66,12 +65,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
 
   const disponiveis = useMemo(() => rps.filter(ehSelecionavel), [rps]);
   const tabelaDisponivel = useMemo(() => disponiveis.reduce((soma, rp) => soma + rp.valorTabela, 0), [disponiveis]);
-
-  useEffect(() => {
-    if (checkboxCabecalhoRef.current) {
-      checkboxCabecalhoRef.current.indeterminate = estadoTodas === 'parcial';
-    }
-  }, [estadoTodas]);
+  const rpsSelecionadas = useMemo(() => rps.filter((rp) => selecionadas.includes(rp.rp)), [rps, selecionadas]);
 
   function alternarSelecao(rp: string) {
     setSelecionadas((atual) => (atual.includes(rp) ? atual.filter((id) => id !== rp) : [...atual, rp]));
@@ -378,7 +372,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
 
         <aside style={{ flex: '0 1 400px', width: 400, position: 'sticky', top: 80, display: 'flex', flexDirection: 'column', gap: 12 }}>
           {selecionadas.length >= 2 ? (
-            <ResumoConsolidado rps={rps.filter((rp) => selecionadas.includes(rp.rp))} />
+            <ResumoConsolidado rps={rpsSelecionadas} />
           ) : detalheId ? (
             (() => {
               const rpAberta = rps.find((rp) => rp.rp === detalheId);
@@ -436,13 +430,13 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-          <span style={{ fontSize: 13, fontWeight: 600 }}>{resumo.quantidade} RPs disponíveis</span>
+          <span style={{ fontSize: 13, fontWeight: 600 }}>{resumo.quantidade} RPs selecionadas</span>
           <span style={{ width: 1, height: 14, background: 'var(--cor-rps-ink-avatar)' }} />
           <span style={{ fontSize: 14, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
             {formatarMoeda(resumo.totalTabela)}
           </span>
           <span style={{ fontSize: 11.5, color: 'var(--cor-rps-ink-tinta-3)' }}>
-            {rps.filter((rp) => selecionadas.includes(rp.rp)).reduce((soma, rp) => soma + rp.nDatas, 0)} datas
+            {rpsSelecionadas.reduce((soma, rp) => soma + rp.nDatas, 0).toLocaleString('pt-BR')} datas
           </span>
         </div>
         <div style={{ display: 'flex', gap: 8, marginLeft: 'auto' }}>
@@ -490,7 +484,7 @@ export function ListaRps({ rps, sessao }: ListaRpsProps) {
 
       {modalPropostaAberto && (
         <ModalGerarProposta
-          rpsSelecionadas={rps.filter((rp) => selecionadas.includes(rp.rp))}
+          rpsSelecionadas={rpsSelecionadas}
           aoFechar={() => setModalPropostaAberto(false)}
         />
       )}

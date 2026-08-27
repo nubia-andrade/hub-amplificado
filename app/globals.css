@@ -174,39 +174,39 @@ button:active {
   transition: background-color 0.12s ease, color 0.12s ease;
 }
 .aba-nav:not(.aba-nav-ativa):hover {
-  background: var(--cor-rps-ink-hover);
-  color: #ffffff;
+  background: var(--cor-rps-ink-hover) !important;
+  color: #ffffff !important;
 }
 
 .link-sair {
   transition: color 0.12s ease;
 }
 .link-sair:hover {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .linha-rp {
   transition: background-color 0.12s ease;
 }
 .linha-rp:hover {
-  background: var(--cor-rps-hover-linha);
+  background: var(--cor-rps-hover-linha) !important;
 }
 .linha-rp.linha-rp-selecionada:hover {
-  background: var(--cor-rps-disponivel-linha-fundo);
+  background: var(--cor-rps-disponivel-linha-fundo) !important;
 }
 
 .botao-rps-secundario {
   transition: background-color 0.12s ease;
 }
 .botao-rps-secundario:hover {
-  background: var(--cor-rps-ink-hover);
+  background: var(--cor-rps-ink-hover) !important;
 }
 
 .botao-rps-primario {
   transition: background-color 0.12s ease;
 }
 .botao-rps-primario:hover:not(:disabled) {
-  background: var(--cor-marca-hover);
+  background: var(--cor-marca-hover) !important;
 }
 
 .item-linha-proposta {
