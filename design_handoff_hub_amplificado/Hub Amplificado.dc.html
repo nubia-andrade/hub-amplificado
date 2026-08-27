@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<![CDATA[<helmet><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f4f6;font-family:"Globotipo Corporativa Textos","Globotipo Corporativa","Globotipo","Helvetica Neue",Helvetica,Arial,sans-serif;color:#101820;-webkit-font-smoothing:antialiased}
+a{color:#f50234;text-decoration:none}a:hover{color:#c00028;text-decoration:underline}
+::selection{background:#ffd0da}
+input,select,button{font-family:inherit}
+</style></helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#f3f4f6">
+
+  <header style="display:flex;align-items:center;gap:28px;padding:0 28px;height:60px;background:#101820;color:#ffffff;position:sticky;top:0;z-index:30">
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <span style="font-size:15px;font-weight:700;letter-spacing:-0.2px;line-height:1">Hub Amplificado</span>
+      <span style="width:64px;height:4px;border-radius:2px;background:linear-gradient(90deg,#f50234 0%,#ff3b00 28%,#ff7a00 58%,#ffa00a 80%,#ffb612 100%)"></span>
+    </div>
+    <nav style="display:flex;align-items:center;gap:4px;margin-left:8px">
+      <span style="padding:7px 14px;border-radius:7px;background:#f50234;color:#ffffff;font-size:13px;font-weight:600">Minhas RPs</span>
+      <a href="#" style="padding:7px 14px;border-radius:7px;color:#aeb6c0;font-size:13px;font-weight:500" style-hover="background:#1b2430;color:#ffffff">Mapa de Inserção</a>
+    </nav>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1.3">
+        <span style="font-size:12.5px;font-weight:600">Milena Dabul Stork</span>
+        <span style="font-size:11px;color:#9aa4b0">Executivo comercial</span>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#242c37;color:#e8ebee;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;letter-spacing:.02em">MS</div>
+      <a href="#" style="font-size:12px;color:#9aa4b0;padding-left:12px;border-left:1px solid #242c37" style-hover="color:#ffffff">Sair</a>
+    </div>
+  </header>
+
+  <div style="display:flex;flex-wrap:wrap;gap:20px;padding:20px 24px 84px;align-items:flex-start">
+
+    <main style="flex:1 1 620px;min-width:0;display:flex;flex-direction:column;gap:14px">
+
+      <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:1px;background:#e2e5e9;border:1px solid #e2e5e9;border-radius:12px;overflow:hidden">
+        <div style="background:#ffffff;padding:15px 18px 14px;display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Carteira</span>
+          <span style="font-size:23px;font-weight:600;letter-spacing:-.6px;font-variant-numeric:tabular-nums">16 <span style="font-size:12px;font-weight:500;color:#77808c">RPs</span></span>
+        </div>
+        <div style="background:#ffffff;padding:15px 18px 14px;display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Disponíveis</span>
+          <span style="font-size:23px;font-weight:600;letter-spacing:-.6px;color:#0f8a5f;font-variant-numeric:tabular-nums">5 <span style="font-size:12px;font-weight:500;color:#77808c">de 16</span></span>
+        </div>
+        <div style="background:#ffffff;padding:15px 18px 14px;display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Tabela disponível</span>
+          <span style="font-size:23px;font-weight:600;letter-spacing:-.6px;font-variant-numeric:tabular-nums">R$ 1.143.321,60</span>
+        </div>
+        <div style="background:#ffffff;padding:15px 18px 14px;display:flex;flex-direction:column;gap:5px">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Selecionado</span>
+          <span style="font-size:23px;font-weight:600;letter-spacing:-.6px;font-variant-numeric:tabular-nums">{{ selTotalFmt }}</span>
+        </div>
+      </section>
+
+      <section style="background:#ffffff;border:1px solid #e2e5e9;border-radius:12px;overflow:hidden">
+
+        <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid #e8eaee;flex-wrap:wrap">
+          <div style="position:relative;flex:1;min-width:230px">
+            <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);width:11px;height:11px;border:1.6px solid #a09a8d;border-radius:50%"></span>
+            <input placeholder="Buscar RP, anunciante ou CNPJ" style="width:100%;height:36px;padding:0 12px 0 32px;border:1px solid #e2e5e9;border-radius:8px;background:#f8f9fa;font-size:13px;color:#101820;outline:none" style-focus="border-color:#0f8a5f;background:#fff" />
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select style="height:36px;padding:0 10px;border:1px solid #e2e5e9;border-radius:8px;background:#f8f9fa;font-size:12.5px;color:#333a44"><option>Praça: todas</option></select>
+            <select style="height:36px;padding:0 10px;border:1px solid #e2e5e9;border-radius:8px;background:#f8f9fa;font-size:12.5px;color:#333a44"><option>Status: todos</option></select>
+            <select style="height:36px;padding:0 10px;border:1px solid #e2e5e9;border-radius:8px;background:#f8f9fa;font-size:12.5px;color:#333a44"><option>Elegibilidade: toda</option></select>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding-left:4px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#77808c">16 / 16</span>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto">
+        <div style="min-width:860px;display:grid;grid-template-columns:44px 92px minmax(160px,1fr) 66px 128px 156px 118px;align-items:center;padding:0 16px;height:38px;background:#f4f5f7;border-bottom:1px solid #e2e5e9;font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#77808c">
+          <div onClick="{{ toggleAll }}" style="cursor:pointer;display:flex;align-items:center">
+            <span style="width:16px;height:16px;border-radius:4px;border:1.5px solid #aab1bb;background:{{ allBg }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;line-height:1">{{ allMark }}</span>
+          </div>
+          <div>RP</div>
+          <div>Anunciante</div>
+          <div>Praça</div>
+          <div>Mês</div>
+          <div style="text-align:right">Tabela</div>
+          <div style="text-align:right">Status</div>
+        </div>
+
+        <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+          <div>
+            <div style="min-width:860px;display:flex;align-items:center;gap:10px;padding:9px 16px;background:#f8f9fa;border-bottom:1px solid #e8eaee;border-top:1px solid #e8eaee">
+              <span style="width:5px;height:5px;border-radius:50%;background:#c3c9d1"></span>
+              <span style="font-size:11.5px;font-weight:600;letter-spacing:.01em;color:#333a44">{{ g.label }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8b93a0">{{ g.count }} RPs</span>
+              <span style="flex:1;height:1px;background:#e8eaee"></span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#5b636e;font-variant-numeric:tabular-nums">{{ g.sum }}</span>
+            </div>
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+              <div onClick="{{ r.toggle }}" style="min-width:860px;display:grid;grid-template-columns:44px 92px minmax(160px,1fr) 66px 128px 156px 118px;align-items:center;padding:0 16px;height:52px;border-bottom:1px solid #eef0f3;cursor:pointer;position:relative;background:{{ r.bg }}" style-hover="background:#f4f6f8">
+                <span style="position:absolute;left:0;top:0;bottom:0;width:3px;background:{{ r.bar }}"></span>
+                <div style="display:flex;align-items:center">
+                  <span style="width:16px;height:16px;border-radius:4px;border:1.5px solid {{ r.boxBorder }};background:{{ r.boxBg }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;line-height:1">{{ r.mark }}</span>
+                </div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:500;color:{{ r.fg }}">{{ r.id }}</div>
+                <div style="min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <span style="font-size:13px;font-weight:500;color:{{ r.fg }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.adv }}</span>
+                  <span style="font-size:11px;color:#8b93a0">{{ r.lines }} linhas</span>
+                </div>
+                <div><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;padding:3px 7px;border-radius:5px;background:#eef0f3;color:#5b636e">{{ r.praca }}</span></div>
+                <div style="font-size:12.5px;color:#5b636e">{{ r.mes }}</div>
+                <div style="text-align:right;font-size:13px;font-weight:500;font-variant-numeric:tabular-nums;color:{{ r.valueFg }}">{{ r.value }}</div>
+                <div style="display:flex;justify-content:flex-end">
+                  <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border-radius:999px;border:1px solid {{ r.chipBorder }};background:{{ r.chipBg }};color:{{ r.chipFg }};font-size:11px;font-weight:600">
+                    <span style="width:5px;height:5px;border-radius:50%;background:{{ r.dot }}"></span>{{ r.status }}
+                  </span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        </div>
+      </section>
+    </main>
+
+    <aside style="flex:0 1 400px;width:400px;max-width:100%;position:sticky;top:80px;display:flex;flex-direction:column;gap:12px">
+      <div style="background:#ffffff;border:1px solid #e2e5e9;border-radius:12px;overflow:hidden">
+        <div style="padding:16px 18px 14px;background:#101820;color:#ffffff;position:relative">
+          <span style="position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#f50234 0%,#ff3b00 28%,#ff7a00 58%,#ffa00a 80%,#ffb612 100%)"></span>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+            <span style="font-size:15px;font-weight:600">{{ selCount }} RPs selecionadas</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#ff5b7d">Proposta</span>
+          </div>
+          <div style="margin-top:9px;display:flex;align-items:center;gap:8px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:3px 8px;border-radius:5px;background:#1e2732;color:#d6dbe1">SAERJ</span>
+            <span style="font-size:11.5px;color:#9aa4b0">{{ selDates }} datas de exibição</span>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px 10px;display:flex;flex-direction:column;gap:3px;border-bottom:1px solid #e8eaee">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Total de tabela</span>
+          <span style="font-size:26px;font-weight:600;letter-spacing:-.7px;font-variant-numeric:tabular-nums">{{ selTotalFmt }}</span>
+        </div>
+
+        <div style="padding:12px 18px 4px;display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:#77808c">Linhas por RP</span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:#aab1bb">unitário × datas</span>
+        </div>
+
+        <div style="max-height:420px;overflow:auto;padding:6px 6px 10px">
+          <sc-for list="{{ lines }}" as="l" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:56px minmax(0,1fr) 62px 96px;align-items:center;gap:6px;padding:9px 12px;border-radius:8px" style-hover="background:#f4f6f8">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#77808c">{{ l.rp }}</span>
+              <span style="min-width:0;display:flex;flex-direction:column;gap:1px">
+                <span style="font-size:12.5px;color:#101820;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ l.program }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:#aab1bb">{{ l.code }}</span>
+              </span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5b636e;text-align:right">{{ l.seg }}</span>
+              <span style="font-size:12.5px;font-weight:500;text-align:right;font-variant-numeric:tabular-nums">{{ l.total }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="padding:12px 16px;border:1px dashed #ccd2da;border-radius:12px;font-size:11.5px;line-height:1.5;color:#77808c">
+        Somente RPs <strong style="color:#0b6b4a;font-weight:600">Disponíveis</strong> entram na proposta. RPs não elegíveis permanecem visíveis para consulta.
+      </div>
+    </aside>
+  </div>
+
+  <div style="position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;align-items:center;gap:16px;padding:12px 24px;background:#101820;color:#ffffff">
+    <div style="display:flex;align-items:baseline;gap:12px">
+      <span style="font-size:13px;font-weight:600">{{ selCount }} RPs disponíveis</span>
+      <span style="width:1px;height:14px;background:#242c37"></span>
+      <span style="font-size:14px;font-weight:600;font-variant-numeric:tabular-nums">{{ selTotalFmt }}</span>
+      <span style="font-size:11.5px;color:#9aa4b0">{{ selDates }} datas</span>
+    </div>
+    <div style="flex:1"></div>
+    <button style="height:38px;padding:0 16px;border-radius:8px;border:1px solid #2c3542;background:transparent;color:#e8ebee;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:#1b2430">Alterar status</button>
+    <button style="height:38px;padding:0 20px;border-radius:8px;border:none;background:#f50234;color:#ffffff;font-size:13px;font-weight:600;cursor:pointer" style-hover="background:#ff2a55">Gerar proposta</button>
+  </div>
+</div>]]>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const RPS = [
+  {id:"702290",adv:"SAERJ",lines:5,praca:"RJ",mes:"Setembro/2026",value:753984.00,ok:true},
+  {id:"702291",adv:"SAERJ",lines:2,praca:"RJ",mes:"Setembro/2026",value:225772.80,ok:true},
+  {id:"702292",adv:"SAERJ",lines:2,praca:"RJ",mes:"Setembro/2026",value:61689.60,ok:true},
+  {id:"702289",adv:"SAERJ",lines:1,praca:"RJ",mes:"Setembro/2026",value:60748.80,ok:true},
+  {id:"702288",adv:"SAERJ",lines:2,praca:"RJ",mes:"Setembro/2026",value:41126.40,ok:true},
+  {id:"501226",adv:"SPE SANEAMENTO RIO 1 SA",lines:26,praca:"RJ",mes:"Setembro/2026",value:null,ok:false},
+  {id:"662074",adv:"ELETROBRAS",lines:6,praca:"NET",mes:"Setembro/2026",value:null,ok:false},
+  {id:"648338",adv:"SAERJ",lines:1,praca:"RJ",mes:"Setembro/2026",value:null,ok:false},
+  {id:"676333",adv:"SAERJ",lines:24,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"676329",adv:"SAERJ",lines:4,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"676331",adv:"SAERJ",lines:2,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"632474",adv:"MULTI MARKET",lines:5,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"501210",adv:"SPE SANEAMENTO RIO 1 SA",lines:6,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"679783",adv:"UNIRJ ASSOC VAR UNIDOS EST RJ",lines:3,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"648323",adv:"SAERJ",lines:1,praca:"RJ",mes:"Agosto/2026",value:null,ok:false},
+  {id:"501246",adv:"SPE SANEAMENTO RIO 1 SA",lines:28,praca:"RJ",mes:"Outubro/2026",value:null,ok:false}
+];
+const LINES = [
+  {rp:"702290",program:"Novela III",code:"N20H_RJ",seg:'60" 22',total:206553.60},
+  {rp:"702290",program:"Novela II",code:"N19H_RJ",seg:'60" 22',total:147206.40},
+  {rp:"702290",program:"Vale A Pena Ver De Novo",code:"VALE_RJ",seg:'60" 22',total:143616.00},
+  {rp:"702290",program:"Novela I",code:"N18H_RJ",seg:'60" 22',total:138969.60},
+  {rp:"702290",program:"Novela da Tarde — Edição Especial",code:"N15H_RJ",seg:'60" 22',total:117638.40},
+  {rp:"702291",program:"Bom Dia Praça",code:"BPRA_RJ",seg:'60" 22',total:168326.40},
+  {rp:"702291",program:"Bom Dia Brasil",code:"NBRA_RJ",seg:'60" 11',total:57446.40},
+  {rp:"702289",program:"Praça TV 2ª Edição (Seg/Sex)",code:"PTV2_RJ",seg:'60" 8',total:60748.80},
+  {rp:"702288",program:"Jornal Nacional",code:"JNAC_RJ",seg:'60" 3',total:28166.40},
+  {rp:"702288",program:"Fantástico",code:"FANT_RJ",seg:'60" 1',total:12960.00}
+];
+const money = v => v == null ? "—" : "R$ " + v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+class Component extends DCLogic {
+  state = { sel: ["702290","702291","702289","702288"] };
+  toggle(id, ok) {
+    if (!ok) return;
+    this.setState(s => ({ sel: s.sel.includes(id) ? s.sel.filter(x => x !== id) : s.sel.concat(id) }));
+  }
+  renderVals() {
+    const sel = this.state.sel;
+    const eligible = RPS.filter(r => r.ok);
+    const allOn = sel.length === eligible.length;
+    const order = ["Setembro/2026","Agosto/2026","Outubro/2026"];
+    const groups = order.map(label => {
+      const rows = RPS.filter(r => r.mes === label);
+      const sum = rows.reduce((a, r) => a + (r.value || 0), 0);
+      return {
+        label, count: rows.length,
+        sum: sum ? money(sum) : "sem tabela",
+        rows: rows.map(r => {
+          const on = sel.includes(r.id);
+          return {
+            ...r, value: money(r.value), mark: on ? "✓" : "",
+            toggle: () => this.toggle(r.id, r.ok),
+            bg: on ? "#f2faf6" : "#ffffff",
+            bar: on ? "#0f8a5f" : "transparent",
+            fg: r.ok ? "#101820" : "#8b93a0",
+            valueFg: r.value == null ? "#c3c9d1" : "#101820",
+            boxBg: on ? "#0f8a5f" : (r.ok ? "#fff" : "#f4f5f7"),
+            boxBorder: on ? "#0f8a5f" : (r.ok ? "#aab1bb" : "#e2e5e9"),
+            status: r.ok ? "Disponível" : "Não elegível",
+            chipBg: r.ok ? "#e6f6ef" : "#f4f5f7",
+            chipBorder: r.ok ? "#bfe6d5" : "#e2e5e9",
+            chipFg: r.ok ? "#0b6b4a" : "#77808c",
+            dot: r.ok ? "#0f8a5f" : "#c3c9d1"
+          };
+        })
+      };
+    });
+    const selTotal = LINES.filter(l => sel.includes(l.rp)).reduce((a, l) => a + l.total, 0);
+    return {
+      groups, selCount: sel.length,
+      selTotalFmt: money(selTotal), selDates: 56,
+      allMark: allOn ? "✓" : (sel.length ? "–" : ""),
+      allBg: sel.length ? "#0f8a5f" : "#fff",
+      toggleAll: () => this.setState(s => ({ sel: s.sel.length === eligible.length ? [] : eligible.map(r => r.id) })),
+      lines: LINES.filter(l => sel.includes(l.rp)).map(l => ({ ...l, total: money(l.total) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
